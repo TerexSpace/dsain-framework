@@ -1,0 +1,285 @@
+{
+  "femnist": {
+    "dataset": "femnist",
+    "config": {
+      "dataset": "femnist",
+      "num_clients": 100,
+      "num_rounds": 50,
+      "participation_rate": 0.1,
+      "local_epochs": 5,
+      "learning_rate": 0.01,
+      "compression_ratio": 0.1,
+      "dp_epsilon": 4.0,
+      "dp_delta": 1e-05,
+      "byzantine_frac": 0.0,
+      "seed": 42
+    },
+    "heterogeneity": {
+      "num_classes": 62,
+      "mean_kl_divergence": 2.00823220099199,
+      "max_kl_divergence": 2.6748392100302354,
+      "sample_size_gini": 0.2611431187491196,
+      "global_label_entropy": 4.074794556166146
+    },
+    "history": [
+      {
+        "avg_loss": 3.3241872826159566,
+        "num_participants": 10,
+        "update_norm": 126.19485178536921
+      },
+      {
+        "avg_loss": 2.2807521335675887,
+        "num_participants": 10,
+        "update_norm": 126.51679529682274
+      },
+      {
+        "avg_loss": 4.191685717782739,
+        "num_participants": 10,
+        "update_norm": 126.12561118137383
+      },
+      {
+        "avg_loss": 4.4172054274073735,
+        "num_participants": 10,
+        "update_norm": 126.52856169941556
+      },
+      {
+        "avg_loss": 4.3640183911918395,
+        "num_participants": 10,
+        "update_norm": 126.01406519844701
+      },
+      {
+        "avg_loss": 4.809435279984285,
+        "num_participants": 10,
+        "update_norm": 125.78688003569104
+      },
+      {
+        "avg_loss": 4.93671116471751,
+        "num_participants": 10,
+        "update_norm": 126.15418455425734
+      },
+      {
+        "avg_loss": 4.97987280185011,
+        "num_participants": 10,
+        "update_norm": 126.18628280926005
+      },
+      {
+        "avg_loss": 4.59680364719101,
+        "num_participants": 10,
+        "update_norm": 126.18221985557656
+      },
+      {
+        "avg_loss": 5.402948233440626,
+        "num_participants": 10,
+        "update_norm": 126.31513575543975,
+        "eval_accuracy": 0.0512491559756921
+      },
+      {
+        "avg_loss": 5.744532082494142,
+        "num_participants": 10,
+        "update_norm": 126.21650049131782
+      },
+      {
+        "avg_loss": 5.335056642853443,
+        "num_participants": 10,
+        "update_norm": 126.3734397945192
+      },
+      {
+        "avg_loss": 5.960497509647746,
+        "num_participants": 10,
+        "update_norm": 125.80491044038412
+      },
+      {
+        "avg_loss": 4.809559463779885,
+        "num_participants": 10,
+        "update_norm": 126.37357092504725
+      },
+      {
+        "avg_loss": 5.797855850129086,
+        "num_participants": 10,
+        "update_norm": 125.80387533554291
+      },
+      {
+        "avg_loss": 5.078839221449876,
+        "num_participants": 10,
+        "update_norm": 126.25849015013104
+      },
+      {
+        "avg_loss": 5.071544745131588,
+        "num_participants": 10,
+        "update_norm": 126.21410326906334
+      },
+      {
+        "avg_loss": 4.754713053066491,
+        "num_participants": 10,
+        "update_norm": 126.22309409254014
+      },
+      {
+        "avg_loss": 5.187329407307403,
+        "num_participants": 10,
+        "update_norm": 125.4003818807616
+      },
+      {
+        "avg_loss": 5.010152486716791,
+        "num_participants": 10,
+        "update_norm": 126.51456100586172,
+        "eval_accuracy": 0.021778453078648435
+      },
+      {
+        "avg_loss": 4.7206303173914765,
+        "num_participants": 10,
+        "update_norm": 126.32077817699904
+      },
+      {
+        "avg_loss": 6.249819073871464,
+        "num_participants": 10,
+        "update_norm": 126.52906591777865
+      },
+      {
+        "avg_loss": 4.941698218302864,
+        "num_participants": 10,
+        "update_norm": 125.53319318442001
+      },
+      {
+        "avg_loss": 4.648434192199053,
+        "num_participants": 10,
+        "update_norm": 126.45329798360706
+      },
+      {
+        "avg_loss": 5.181894679785643,
+        "num_participants": 10,
+        "update_norm": 126.22314254174822
+      },
+      {
+        "avg_loss": 4.991618998214694,
+        "num_participants": 10,
+        "update_norm": 126.21276198520512
+      },
+      {
+        "avg_loss": 6.7572496384647165,
+        "num_participants": 10,
+        "update_norm": 126.17074648005936
+      },
+      {
+        "avg_loss": 4.814155569508748,
+        "num_participants": 10,
+        "update_norm": 125.75395848286497
+      },
+      {
+        "avg_loss": 5.17232705915129,
+        "num_participants": 10,
+        "update_norm": 126.00623922269286
+      },
+      {
+        "avg_loss": 5.244893371678122,
+        "num_participants": 10,
+        "update_norm": 126.52301039545684,
+        "eval_accuracy": 0.030307311903920876
+      },
+      {
+        "avg_loss": 5.690824523697097,
+        "num_participants": 10,
+        "update_norm": 126.20172747768746
+      },
+      {
+        "avg_loss": 4.90688298253141,
+        "num_participants": 10,
+        "update_norm": 125.9118342119272
+      },
+      {
+        "avg_loss": 4.9598597335084635,
+        "num_participants": 10,
+        "update_norm": 126.97203117941145
+      },
+      {
+        "avg_loss": 4.254229783639184,
+        "num_participants": 10,
+        "update_norm": 126.2383817001853
+      },
+      {
+        "avg_loss": 5.170345611566259,
+        "num_participants": 10,
+        "update_norm": 126.38572005556135
+      },
+      {
+        "avg_loss": 4.68104040538709,
+        "num_participants": 10,
+        "update_norm": 125.89160857393429
+      },
+      {
+        "avg_loss": 5.238215953462518,
+        "num_participants": 10,
+        "update_norm": 126.03553972874705
+      },
+      {
+        "avg_loss": 5.701838809200508,
+        "num_participants": 10,
+        "update_norm": 126.24461682324356
+      },
+      {
+        "avg_loss": 4.263928146235446,
+        "num_participants": 10,
+        "update_norm": 126.2458925808731
+      },
+      {
+        "avg_loss": 5.468435199745465,
+        "num_participants": 10,
+        "update_norm": 126.2513410750525,
+        "eval_accuracy": 0.045716342692584594
+      },
+      {
+        "avg_loss": 4.5438264797714085,
+        "num_participants": 10,
+        "update_norm": 126.01984055576004
+      },
+      {
+        "avg_loss": 5.4882210580680155,
+        "num_participants": 10,
+        "update_norm": 125.90026344917494
+      },
+      {
+        "avg_loss": 6.142392860758249,
+        "num_participants": 10,
+        "update_norm": 126.39671654048239
+      },
+      {
+        "avg_loss": 5.015019939887508,
+        "num_participants": 10,
+        "update_norm": 126.26520732755327
+      },
+      {
+        "avg_loss": 5.487862706994225,
+        "num_participants": 10,
+        "update_norm": 126.17408292375399
+      },
+      {
+        "avg_loss": 4.97094142290109,
+        "num_participants": 10,
+        "update_norm": 125.86653067235866
+      },
+      {
+        "avg_loss": 4.5371338118015565,
+        "num_participants": 10,
+        "update_norm": 126.29239677454198
+      },
+      {
+        "avg_loss": 4.967659518479926,
+        "num_participants": 10,
+        "update_norm": 125.69656257788232
+      },
+      {
+        "avg_loss": 5.9760069013534665,
+        "num_participants": 10,
+        "update_norm": 125.96606282980102
+      },
+      {
+        "avg_loss": 5.070948144506204,
+        "num_participants": 10,
+        "update_norm": 125.94781477303117,
+        "eval_accuracy": 0.04633122197708348
+      }
+    ],
+    "final_accuracy": 0.04809355753927064,
+    "training_time_seconds": 21.21729063987732,
+    "num_byzantine": 0
+  }
+}
