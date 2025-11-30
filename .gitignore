@@ -106,6 +106,10 @@ experiments/results/*.csv
 SUBMISSION_CHECKLIST.md
 *Checklist*.md
 
+# Experiment results (keep local, large files)
+results/dsain_*/
+!results/README.md
+
 # Temporary files
 *.tmp
 *.temp
