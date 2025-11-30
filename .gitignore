@@ -1,0 +1,115 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.dvi
+*.ps
+
+# LaTeX output (keep only main.pdf for submission)
+latex/*.pdf
+!latex/main.pdf
+
+# Generated figures (track these for reproducibility)
+# figures/*.pdf
+# figures/*.png
+# figures/*.json
+
+# Data files (if containing sensitive information)
+data/real_data/
+data/private/
+*.csv
+*.xlsx
+*.db
+*.sqlite
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets and credentials
+.env
+.env.local
+*.key
+*.pem
+*.p12
+secrets/
+credentials/
+config/local.py
+*_secret.txt
+
+# Experimental outputs
+experiments/logs/
+experiments/checkpoints/
+experiments/results/*.csv
+*.ckpt
+*.pth
+*.h5
+*.pkl
+*.pickle
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS generated
+.Spotlight-V100
+.Trashes
+ehthumbs.db
