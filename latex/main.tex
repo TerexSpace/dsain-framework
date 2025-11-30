@@ -1,11 +1,7 @@
 \documentclass[twoside,11pt]{article}
 
-% JMLR style file - required for submission
-\usepackage{jmlr2e}
-
-% Additional packages
+% Additional packages - load BEFORE jmlr2e to avoid conflicts
 \usepackage{amsmath,amssymb,amsfonts}
-\usepackage{amsthm}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{graphicx}
@@ -17,11 +13,14 @@
 \usepackage{lastpage}
 \usepackage{tikz}
 \usepackage{pgfplots}
-\pgfplotsset{compat=1.16}
+\pgfplotsset{compat=1.18}
 \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
 
-% Define assumption environment
-\newtheorem{assumption}{Assumption}
+% JMLR style file - required for submission (includes theorem definitions)
+\usepackage{jmlr2e}
+
+% Define assumption environment (uses jmlr2e theorem counter)
+\newtheorem{assumption}[theorem]{Assumption}
 
 % Custom macros
 \newcommand{\dataset}{{\cal D}}
@@ -402,7 +401,7 @@ Table~\ref{tab:cifar10} shows results on CIFAR-10. \DSAIN{} achieves the highest
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.8\linewidth]{../figures/convergence_curves.png}
+\includegraphics[width=0.8\linewidth]{../figures/convergence_curves.pdf}
 \caption{Convergence curves of \DSAIN{} compared to baselines on CIFAR-10.}
 \label{fig:convergence}
 \end{figure}
@@ -429,7 +428,7 @@ Table~\ref{tab:byzantine} demonstrates Byzantine resilience. While FedAvg comple
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.8\linewidth]{../figures/byzantine_resilience.png}
+\includegraphics[width=0.8\linewidth]{../figures/byzantine_resilience.pdf}
 \caption{Impact of Byzantine attacks on model accuracy. \ByzFed{} maintains performance while FedAvg diverges.}
 \label{fig:byzantine}
 \end{figure}
@@ -438,7 +437,7 @@ Table~\ref{tab:byzantine} demonstrates Byzantine resilience. While FedAvg comple
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.8\linewidth]{../figures/scalability.png}
+\includegraphics[width=0.8\linewidth]{../figures/scalability.pdf}
 \caption{Training time scaling with number of clients on CIFAR-100.}
 \label{fig:scalability}
 \end{figure}
