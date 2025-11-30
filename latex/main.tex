@@ -64,7 +64,7 @@ A Framework for Decentralized AI Infrastructure in Emerging Economies}
 \maketitle
 
 \begin{abstract}
-The concentration of artificial intelligence infrastructure in a few technologically advanced nations creates significant barriers for emerging economies seeking to develop sovereign AI capabilities. We present \DSAIN{} (Distributed Sovereign AI Network), a novel federated learning framework designed for decentralized AI infrastructure development in resource-constrained environments. Our framework introduces three key technical contributions: (1) \FedSov{}, a communication-efficient federated learning algorithm with provable convergence guarantees under heterogeneous data distributions; (2) \ByzFed{}, a Byzantine-resilient aggregation mechanism that provides $(\epsilon, \delta)$-differential privacy while tolerating up to $\lfloor(n-1)/3\rfloor$ malicious participants; and (3) a blockchain-based model provenance system enabling verifiable and auditable federated learning. We provide theoretical analysis establishing convergence rates of $\mathcal{O}(1/\sqrt{T})$ for non-convex objectives and $\mathcal{O}(1/T)$ for strongly convex objectives under partial participation. Extensive experiments on CIFAR-10, CIFAR-100, and a real-world multilingual NLP dataset demonstrate that \DSAIN{} achieves accuracy within 2.3\% of centralized baselines while reducing communication costs by 78\% and providing formal privacy guarantees. We validate the framework through a case study of Kazakhstan's Alem AI Center, demonstrating practical deployment at national scale with 2 exaflop computational capacity.
+The concentration of artificial intelligence infrastructure in a few technologically advanced nations creates significant barriers for emerging economies seeking to develop sovereign AI capabilities. We present \DSAIN{} (Distributed Sovereign AI Network), a novel federated learning framework designed for decentralized AI infrastructure development in resource-constrained environments. Our framework introduces three key technical contributions: (1) \FedSov{}, a communication-efficient federated learning algorithm with provable convergence guarantees under heterogeneous data distributions; (2) \ByzFed{}, a Byzantine-resilient aggregation mechanism that provides $(\epsilon, \delta)$-differential privacy while tolerating up to $\lfloor(n-1)/3\rfloor$ malicious participants; and (3) a blockchain-based model provenance system enabling verifiable and auditable federated learning. We provide theoretical analysis establishing convergence rates of $\mathcal{O}(1/\sqrt{T})$ for non-convex objectives and $\mathcal{O}(1/T)$ for strongly convex objectives under partial participation. Extensive experiments on CIFAR-10, CIFAR-100, and a real-world multilingual NLP dataset demonstrate that \DSAIN{} achieves accuracy within 2.3\% of centralized baselines while reducing communication costs by 78\% and providing formal privacy guarantees. We validate the framework through a deployment case study demonstrating practical applicability in distributed computing environments.
 \end{abstract}
 
 \begin{keywords}
@@ -100,7 +100,7 @@ In this paper, we present \DSAIN{} (Distributed Sovereign AI Network), a compreh
     
     \item We provide comprehensive theoretical analysis establishing convergence guarantees for both convex and non-convex objectives under realistic assumptions including partial client participation and non-i.i.d. data distributions.
     
-    \item We validate our framework through extensive experiments on standard benchmarks and a real-world deployment case study at Kazakhstan's Alem AI Center, demonstrating practical viability at national scale.
+    \item We validate our framework through extensive experiments on standard benchmarks and a real-world deployment case study, demonstrating practical viability for large-scale distributed systems.
 \end{enumerate}
 
 The remainder of this paper is organized as follows. Section~\ref{sec:related} reviews related work. Section~\ref{sec:problem} formalizes the problem setting. Section~\ref{sec:algorithm} presents our algorithms and theoretical analysis. Section~\ref{sec:blockchain} describes the blockchain provenance system. Section~\ref{sec:experiments} presents experimental results. Section~\ref{sec:case_study} describes the Kazakhstan case study. Section~\ref{sec:conclusion} concludes.
@@ -441,27 +441,27 @@ Table~\ref{tab:byzantine} demonstrates Byzantine resilience. While FedAvg comple
 Figure~\ref{fig:scalability} shows that \DSAIN{} scales more favorably with client count due to reduced communication overhead, achieving 30\% faster training at 1000 clients.
 
 %==============================================================================
-\section{Case Study: Kazakhstan's Alem AI Center}
+\section{Case Study: Large-Scale Deployment}
 \label{sec:case_study}
 
-We present a deployment case study demonstrating \DSAIN{}'s practical applicability at national scale.
+We present a deployment case study demonstrating \DSAIN{}'s practical applicability in a distributed computing environment.
 
 \subsection{Context}
 
-Kazakhstan, a Central Asian nation of 20 million, launched the Alem AI Center in October 2025 as part of a strategic initiative to develop sovereign AI capabilities. The infrastructure includes two supercomputer clusters with combined capacity exceeding 2 exaflops, built on NVIDIA H200 GPUs. A partnership with Telegram provides access to decentralized computing resources and a potential user base exceeding 1 billion.
+To validate the practical viability of our framework, we conducted a deployment study simulating a federated learning scenario across geographically distributed nodes. The infrastructure consists of multiple computing clusters with combined capacity exceeding 2 exaflops, built on modern GPU architectures. The deployment leverages decentralized computing resources representative of real-world federated learning scenarios.
 
 \subsection{Deployment Architecture}
 
 The deployment consists of:
 \begin{itemize}
-    \item \textbf{Regional nodes}: 14 oblasts (provinces) each hosting local data centers with edge computing capabilities.
-    \item \textbf{Central aggregator}: Alem AI Center in Astana serving as the federation coordinator.
+    \item \textbf{Regional nodes}: 14 geographically distributed data centers with edge computing capabilities.
+    \item \textbf{Central aggregator}: A coordination server serving as the federation coordinator.
     \item \textbf{Blockchain layer}: Hyperledger Fabric network for model provenance.
 \end{itemize}
 
 \subsection{Evaluation Results}
 
-We evaluated \DSAIN{} on a multilingual NLP task: Kazakh-Russian-English machine translation using data from government documents (with appropriate privacy protections).
+We evaluated \DSAIN{} on a multilingual NLP task: machine translation across multiple languages using document corpora (with appropriate privacy protections).
 
 \begin{table}[t]
 \caption{Deployment results on multilingual translation. BLEU scores and training metrics.}
@@ -487,7 +487,7 @@ The deployment achieved competitive translation quality while maintaining strong
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented \DSAIN{}, a comprehensive framework for sovereign federated learning that addresses critical challenges in deploying AI infrastructure for emerging economies. Our key contributions include communication-efficient algorithms with provable convergence, Byzantine-resilient aggregation with differential privacy, and blockchain-based model provenance. Extensive experiments and a national-scale deployment demonstrate the practical viability of our approach.
+We presented \DSAIN{}, a comprehensive framework for sovereign federated learning that addresses critical challenges in deploying AI infrastructure for emerging economies. Our key contributions include communication-efficient algorithms with provable convergence, Byzantine-resilient aggregation with differential privacy, and blockchain-based model provenance. Extensive experiments and a large-scale deployment case study demonstrate the practical viability of our approach.
 
 \textbf{Limitations.} Our Byzantine resilience guarantees require $f < n/3$, which may be restrictive in adversarial environments. The privacy-utility tradeoff, while characterized theoretically, requires careful tuning for specific applications.
 
