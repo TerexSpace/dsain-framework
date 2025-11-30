@@ -370,7 +370,7 @@ def visualize_results(history: List[Dict[str, float]], output_dir: str = "../fig
     ax2.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    output_path = os.path.join(output_dir, 'convergence_curves.pdf')
+    output_path = os.path.join(output_dir, 'convergence_curves.png')
     plt.savefig(output_path, bbox_inches='tight', dpi=300)
     logger.info(f"Saved convergence plot to {output_path}")
     plt.close()
@@ -444,7 +444,7 @@ def run_byzantine_experiment(
         plt.grid(True, alpha=0.3)
         
         Path(output_dir).mkdir(parents=True, exist_ok=True)
-        output_path = os.path.join(output_dir, 'byzantine_resilience.pdf')
+        output_path = os.path.join(output_dir, 'byzantine_resilience.png')
         plt.savefig(output_path, bbox_inches='tight', dpi=300)
         logger.info(f"Saved Byzantine resilience plot to {output_path}")
         plt.close()
@@ -519,7 +519,7 @@ def run_scalability_experiment(
                         xytext=(0, 10), ha='center', fontsize=9)
         
         Path(output_dir).mkdir(parents=True, exist_ok=True)
-        output_path = os.path.join(output_dir, 'scalability.pdf')
+        output_path = os.path.join(output_dir, 'scalability.png')
         plt.savefig(output_path, bbox_inches='tight', dpi=300)
         logger.info(f"Saved scalability plot to {output_path}")
         plt.close()
