@@ -102,6 +102,10 @@ experiments/results/*.csv
 *.pkl
 *.pickle
 
+# Submission documents (keep local, do not push to repository)
+SUBMISSION_CHECKLIST.md
+*Checklist*.md
+
 # Temporary files
 *.tmp
 *.temp
