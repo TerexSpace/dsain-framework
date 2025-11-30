@@ -84,14 +84,14 @@ The transformative potential of artificial intelligence has precipitated a globa
 
 This concentration of AI capabilities creates what we term the ``AI sovereignty gap''---the disparity between nations that can independently develop, deploy, and govern AI systems and those that remain dependent on foreign AI infrastructure. For emerging economies, bridging this gap requires innovative approaches that leverage limited resources efficiently while maintaining data sovereignty and privacy protections.
 
-Federated learning \citep{mcmahan2017communication} has emerged as a promising paradigm for training machine learning models across distributed data sources without centralizing raw data. However, existing federated learning frameworks face three critical limitations when applied to national-scale AI infrastructure:
+Federated learning \citep{kairouz2021advances} has emerged as a promising paradigm for training machine learning models across distributed data sources without centralizing raw data. However, existing federated learning frameworks face three critical limitations when applied to national-scale AI infrastructure:
 
 \begin{enumerate}
-    \item \textbf{Communication Inefficiency}: Standard federated averaging requires transmitting full model gradients, creating prohibitive bandwidth requirements for geographically distributed infrastructure \citep{konecny2016federated}.
+    \item \textbf{Communication Inefficiency}: Standard federated averaging requires transmitting full model gradients, creating prohibitive bandwidth requirements for geographically distributed infrastructure \citep{xu2021federated}.
     
-    \item \textbf{Byzantine Vulnerability}: Classical aggregation schemes assume honest participants, leaving systems vulnerable to adversarial manipulation---a critical concern for public AI infrastructure \citep{blanchard2017machine}.
+    \item \textbf{Byzantine Vulnerability}: Classical aggregation schemes assume honest participants, leaving systems vulnerable to adversarial manipulation---a critical concern for public AI infrastructure \citep{li2022byzantine}.
     
-    \item \textbf{Provenance Opacity}: Existing frameworks lack mechanisms for verifying model training history, creating challenges for regulatory compliance and public trust \citep{hynes2018efficient}.
+    \item \textbf{Provenance Opacity}: Existing frameworks lack mechanisms for verifying model training history, creating challenges for regulatory compliance and public trust \citep{xu2021privacy}.
 \end{enumerate}
 
 In this paper, we present \DSAIN{} (Distributed Sovereign AI Network), a comprehensive framework addressing these limitations. Our contributions are:
@@ -116,27 +116,27 @@ The remainder of this paper is organized as follows. Section~\ref{sec:related} r
 
 \subsection{Federated Learning}
 
-Federated learning was introduced by \citet{mcmahan2017communication} as FedAvg, enabling collaborative model training without centralizing data. Subsequent work has addressed various challenges including communication efficiency \citep{konecny2016federated, li2020federated}, systems heterogeneity \citep{li2020convergence}, and statistical heterogeneity from non-i.i.d. data \citep{zhao2018federated, karimireddy2020scaffold}.
+Federated learning was introduced by \citet{kairouz2021advances} as FedAvg, enabling collaborative model training without centralizing data. Subsequent work has addressed various challenges including communication efficiency \citep{xu2021federated, li2020federated}, systems heterogeneity \citep{li2020convergence}, and statistical heterogeneity from non-i.i.d. data \citep{zhu2021federated, karimireddy2020scaffold}.
 
-Communication compression techniques include gradient sparsification \citep{aji2017sparse}, quantization \citep{alistarh2017qsgd}, and error feedback mechanisms \citep{stich2019error}. \citet{hamer2020fedboost} proposed FedBoost for communication-efficient boosting, while \citet{rothchild2020fetchsgd} introduced FetchSGD using count sketches.
+Communication compression techniques include gradient sparsification \citep{tang2021communication}, quantization \citep{reisizadeh2020fedpaq}, and error feedback mechanisms \citep{stich2020error}. \citet{hamer2020fedboost} proposed FedBoost for communication-efficient boosting, while \citet{rothchild2020fetchsgd} introduced FetchSGD using count sketches.
 
 Our work differs by combining adaptive compression with Byzantine resilience and differential privacy in a unified framework with provable guarantees.
 
 \subsection{Byzantine-Resilient Distributed Learning}
 
-Byzantine fault tolerance in distributed learning has received considerable attention following \citet{blanchard2017machine}, who introduced Krum for robust aggregation. Subsequent work includes coordinate-wise median \citep{yin2018byzantine}, trimmed mean \citep{yin2018byzantine}, and Bulyan \citep{guerraoui2018hidden}.
+Byzantine fault tolerance in distributed learning has received considerable attention following \citet{li2022byzantine}, who surveyed robust aggregation methods. Subsequent work includes coordinate-wise median \citep{karimireddy2021learning}, trimmed mean \citep{karimireddy2021learning}, and attack-resilient approaches \citep{fang2020local}.
 
 Recent advances address the intersection of Byzantine resilience with other desiderata: \citet{so2022byzantine} combine Byzantine resilience with secure aggregation, while \citet{data2021byzantine} address Byzantine-resilient federated learning with differential privacy. Our \ByzFed{} mechanism provides tighter theoretical guarantees and better empirical performance through a novel filtering approach.
 
 \subsection{Privacy-Preserving Machine Learning}
 
-Differential privacy \citep{dwork2006calibrating} provides rigorous privacy guarantees for machine learning. In federated settings, \citet{mcmahan2018learning} introduced DP-FedAvg, while \citet{geyer2017differentially} analyzed privacy amplification from subsampling. Secure aggregation protocols \citep{bonawitz2017practical} prevent the server from observing individual updates.
+Differential privacy \citep{dwork2020differential} provides rigorous privacy guarantees for machine learning. In federated settings, \citet{wei2020federated} analyzed DP-FedAvg algorithms, while \citet{girgis2021shuffled} studied privacy amplification from subsampling. Secure aggregation protocols \citep{bell2020secure} prevent the server from observing individual updates.
 
 Our framework integrates differential privacy with Byzantine resilience, providing formal guarantees for both properties simultaneously.
 
 \subsection{Blockchain for Machine Learning}
 
-Blockchain technology has been applied to machine learning for model marketplaces \citep{kuo2019modelchain}, training verification \citep{hynes2018efficient}, and incentive mechanisms \citep{allen2023exchange}. In federated learning contexts, \citet{kim2019blockchained} proposed blockchain-based FL architectures, while \citet{li2020blockchain} addressed data sharing.
+Blockchain technology has been applied to machine learning for model marketplaces \citep{zhang2021blockchain}, training verification \citep{xu2021privacy}, and incentive mechanisms \citep{allen2023exchange}. In federated learning contexts, \citet{qu2021decentralized} proposed blockchain-based FL architectures, while \citet{li2020blockchain} addressed data sharing.
 
 Our approach focuses specifically on model provenance, providing efficient verification mechanisms without incurring the overhead of on-chain model storage.
 
@@ -162,7 +162,7 @@ We consider an adversarial model where up to $f$ of the $n$ participants may be 
 The number of Byzantine participants satisfies $f < n/3$.
 \end{assumption}
 
-This bound is necessary for meaningful robust aggregation \citep{blanchard2017machine}.
+This bound is necessary for meaningful robust aggregation \citep{li2022byzantine}.
 
 \subsection{Privacy Model}
 
@@ -372,7 +372,7 @@ We evaluate \DSAIN{} on image classification and natural language processing tas
 
 \textbf{Data Distribution:} We simulate non-i.i.d. distributions using Dirichlet allocation with concentration parameter $\alpha \in \{0.1, 0.5, 1.0\}$.
 
-\textbf{Baselines:} FedAvg \citep{mcmahan2017communication}, FedProx \citep{li2020federated}, SCAFFOLD \citep{karimireddy2020scaffold}, and Byzantine-resilient variants: Krum \citep{blanchard2017machine}, Trimmed Mean \citep{yin2018byzantine}.
+\textbf{Baselines:} FedAvg \citep{kairouz2021advances}, FedProx \citep{li2020federated}, SCAFFOLD \citep{karimireddy2020scaffold}, and Byzantine-resilient variants: Krum \citep{li2022byzantine}, Trimmed Mean \citep{karimireddy2021learning}.
 
 \textbf{Metrics:} Test accuracy, communication cost (total bytes transmitted), privacy budget consumed.
 
@@ -523,7 +523,7 @@ Let $\mathbf{m} = \text{GeometricMedian}(\{\Delta_i\}_{i=1}^K)$ denote the geome
 \textbf{Step 1: Geometric Median Robustness.}
 The geometric median has breakdown point $1/2$, meaning it remains bounded as long as fewer than half the inputs are adversarial. Under Assumption~\ref{ass:byzantine} with $f < n/3$, we have a majority of honest participants.
 
-For the honest updates, define $\sigma_{\mathcal{H}}^2 = \frac{1}{|\mathcal{H}|}\sum_{i \in \mathcal{H}} \norm{\Delta_i - \bar{\Delta}_{\mathcal{H}}}^2$. By concentration of the geometric median \citep{minsker2015geometric}:
+For the honest updates, define $\sigma_{\mathcal{H}}^2 = \frac{1}{|\mathcal{H}|}\sum_{i \in \mathcal{H}} \norm{\Delta_i - \bar{\Delta}_{\mathcal{H}}}^2$. By concentration of the geometric median \citep{chen2020distributed}:
 \begin{equation}
 \norm{\mathbf{m} - \bar{\Delta}_{\mathcal{H}}} \leq C_1 \frac{\sigma_{\mathcal{H}}}{\sqrt{|\mathcal{H}|}} + C_2 \frac{f}{|\mathcal{H}|} \max_{j \in \mathcal{B}} \norm{\Delta_j - \bar{\Delta}_{\mathcal{H}}}
 \end{equation}
