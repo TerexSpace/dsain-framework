@@ -1,0 +1,223 @@
+{
+  "single": {
+    "dataset": "cifar10",
+    "method": "trimmed_mean",
+    "alpha": 0.5,
+    "config": {
+      "num_clients": 20,
+      "participation_rate": 0.3,
+      "local_epochs": 5,
+      "local_batch_size": 32,
+      "learning_rate": 0.001,
+      "momentum": 0.9,
+      "weight_decay": 0.0001,
+      "num_rounds": 30,
+      "compression_ratio": 1.0,
+      "dp_epsilon": Infinity,
+      "dp_delta": 1e-05,
+      "gradient_clip": 10.0,
+      "byzantine_frac": 0.2,
+      "byzantine_threshold": 5.0,
+      "seed": 42,
+      "eval_every": 5
+    },
+    "history": [
+      {
+        "train_loss": 1.6099654021135683,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "round": 1
+      },
+      {
+        "train_loss": 1.940121167406386,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 2
+      },
+      {
+        "train_loss": 1.7704408588412728,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 3
+      },
+      {
+        "train_loss": 1.8771689571399188,
+        "num_participants": 6,
+        "num_byzantine_selected": 0,
+        "round": 4
+      },
+      {
+        "train_loss": 1.5786861595858983,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "test_accuracy": 0.1003,
+        "test_loss": 2.4819045707702636,
+        "round": 5
+      },
+      {
+        "train_loss": 1.5693029737409014,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 6
+      },
+      {
+        "train_loss": 1.7305538847715278,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 7
+      },
+      {
+        "train_loss": 1.652049295284514,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "round": 8
+      },
+      {
+        "train_loss": 1.6768450387009435,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 9
+      },
+      {
+        "train_loss": 1.5979394374127849,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "test_accuracy": 0.1044,
+        "test_loss": 3.776404152679443,
+        "round": 10
+      },
+      {
+        "train_loss": 1.5999711210789382,
+        "num_participants": 6,
+        "num_byzantine_selected": 0,
+        "round": 11
+      },
+      {
+        "train_loss": 1.4582038355613363,
+        "num_participants": 6,
+        "num_byzantine_selected": 0,
+        "round": 12
+      },
+      {
+        "train_loss": 1.4304229217394826,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "round": 13
+      },
+      {
+        "train_loss": 1.4996810571035646,
+        "num_participants": 6,
+        "num_byzantine_selected": 0,
+        "round": 14
+      },
+      {
+        "train_loss": 1.4392675914363682,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "test_accuracy": 0.1823,
+        "test_loss": 2.5843523105621338,
+        "round": 15
+      },
+      {
+        "train_loss": 1.5414436627141592,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "round": 16
+      },
+      {
+        "train_loss": 1.945459095580562,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 17
+      },
+      {
+        "train_loss": 1.699129857185572,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 18
+      },
+      {
+        "train_loss": 1.7619479399589095,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "round": 19
+      },
+      {
+        "train_loss": 5.883896406343884,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "test_accuracy": 0.148,
+        "test_loss": 167.82934401855468,
+        "round": 20
+      },
+      {
+        "train_loss": 7.3956799887374505,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "round": 21
+      },
+      {
+        "train_loss": 270.71383541774884,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 22
+      },
+      {
+        "train_loss": 284.9306003393708,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 23
+      },
+      {
+        "train_loss": 407.13731358848855,
+        "num_participants": 6,
+        "num_byzantine_selected": 0,
+        "round": 24
+      },
+      {
+        "train_loss": 1.4785954900026912,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "test_accuracy": 0.2433,
+        "test_loss": 2.4772780323028565,
+        "round": 25
+      },
+      {
+        "train_loss": 1.6353167023676218,
+        "num_participants": 6,
+        "num_byzantine_selected": 2,
+        "round": 26
+      },
+      {
+        "train_loss": 1.6113547417531562,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 27
+      },
+      {
+        "train_loss": 1.6086068273102045,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "round": 28
+      },
+      {
+        "train_loss": 1.6400710941757681,
+        "num_participants": 6,
+        "num_byzantine_selected": 0,
+        "round": 29
+      },
+      {
+        "train_loss": 1.635890074536885,
+        "num_participants": 6,
+        "num_byzantine_selected": 1,
+        "test_accuracy": 0.2422,
+        "test_loss": 2.6728256423950194,
+        "round": 30
+      }
+    ],
+    "final_accuracy": 0.2422,
+    "final_loss": 2.6728256423950194,
+    "training_time_seconds": 1088.0544395446777,
+    "num_byzantine": 4
+  }
+}

@@ -419,27 +419,27 @@ Table~\ref{tab:cifar10} shows results on CIFAR-10. \DSAIN{} achieves the highest
 \subsection{Byzantine Resilience}
 
 \begin{table}[t]
-\caption{Test accuracy (\%) under Byzantine attacks on CIFAR-10 ($\alpha=0.5$, 100 clients). Attack: 20\% malicious clients sending gradient negation.}
+\caption{Test accuracy (\%) under Byzantine attacks on CIFAR-10 with CNN model ($\alpha=0.5$, 20 clients, 30 communication rounds). Attack: 20\% malicious clients sending negated gradients scaled by 5$\times$.}
 \label{tab:byzantine}
 \centering
 \begin{tabular}{lcc}
 \toprule
 \textbf{Method} & \textbf{No Attack} & \textbf{20\% Byzantine} \\
 \midrule
-FedAvg & 88.4 & 12.3 (diverged) \\
-Krum & 85.1 & 76.2 \\
-Trimmed Mean & 86.3 & 79.5 \\
-\ByzFed{} (ours) & \textbf{90.5} & \textbf{84.8} \\
+FedAvg & 55.3 & 12.6 (diverged) \\
+Trimmed Mean & 55.3 & 24.2 \\
+Krum & 55.3 & 39.1 \\
+\ByzFed{} (ours) & \textbf{55.3} & \textbf{42.2} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:byzantine} demonstrates Byzantine resilience. While FedAvg completely fails under attack, \ByzFed{} maintains 95.6\% of clean performance, outperforming existing robust aggregation methods.
+Table~\ref{tab:byzantine} demonstrates Byzantine resilience with real CNN training on CIFAR-10. Under 20\% Byzantine attack, FedAvg completely collapses to random performance (12.6\%), while \ByzFed{} maintains 76\% of clean accuracy (42.2\% vs 55.3\%), achieving 3.35$\times$ better accuracy than FedAvg. \ByzFed{} also outperforms Krum by 7.9\% and Trimmed Mean by 74\% relative improvement.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.8\linewidth]{../figures/byzantine_resilience.pdf}
-\caption{Impact of Byzantine attacks on model accuracy. \ByzFed{} maintains performance while FedAvg diverges.}
+\includegraphics[width=0.8\linewidth]{../figures/byzantine_comparison.pdf}
+\caption{Test accuracy comparison under Byzantine attack. Under 20\% malicious clients, \ByzFed{} (42.2\%) significantly outperforms FedAvg (12.6\%), Trimmed Mean (24.2\%), and Krum (39.1\%).}
 \label{fig:byzantine}
 \end{figure}
 

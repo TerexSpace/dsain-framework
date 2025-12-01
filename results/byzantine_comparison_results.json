@@ -1,0 +1,37 @@
+{
+  "experiment": "Byzantine Resilience Comparison",
+  "dataset": "CIFAR-10",
+  "num_clients": 20,
+  "num_rounds": 30,
+  "byzantine_fraction": 0.2,
+  "alpha": 0.5,
+  "seed": 42,
+  "methods": {
+    "FedAvg": {
+      "accuracy": 0.1259,
+      "accuracy_pct": "12.59%"
+    },
+    "Trimmed Mean": {
+      "accuracy": 0.2422,
+      "accuracy_pct": "24.22%"
+    },
+    "Krum": {
+      "accuracy": 0.3914,
+      "accuracy_pct": "39.14%"
+    },
+    "DSAIN": {
+      "accuracy": 0.4217,
+      "accuracy_pct": "42.17%"
+    }
+  },
+  "no_attack_baseline": {
+    "FedAvg": 0.5531,
+    "DSAIN": 0.5531
+  },
+  "conclusions": [
+    "DSAIN achieves 3.35x better accuracy than FedAvg under 20% Byzantine attack",
+    "DSAIN outperforms Krum by 7.7% (42.17% vs 39.14%)",
+    "DSAIN outperforms Trimmed Mean by 74% relative improvement",
+    "Without attack, DSAIN matches FedAvg performance (55.31%)"
+  ]
+}
