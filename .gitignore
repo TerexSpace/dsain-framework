@@ -1,4 +1,34 @@
-# Python
+# =============================================================================
+# DSAIN Framework - Git Ignore Configuration
+# =============================================================================
+# NOTE: This repository contains only the core code implementation.
+# Users should install dependencies locally using: pip install -r requirements.txt
+# =============================================================================
+
+# =============================================================================
+# PROJECT FOLDERS TO EXCLUDE (kept local, not tracked)
+# =============================================================================
+
+# GitHub configuration files
+.github/
+
+# VS Code configuration (user-specific settings)
+.vscode/
+
+# LaTeX source files and outputs (manuscript kept separate)
+latex/
+
+# Generated figures (regenerate locally using code/dsain.py or code/real_experiments.py)
+figures/
+
+# Appendices (if any)
+appendices/
+
+# =============================================================================
+# PYTHON DEPENDENCIES & VIRTUAL ENVIRONMENTS
+# =============================================================================
+# Users should create their own virtual environment and install dependencies
+
 __pycache__/
 *.py[cod]
 *$py.class
@@ -23,27 +53,110 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# Virtual environments
+# Virtual environments (create your own with: python -m venv venv)
 venv/
 ENV/
 env/
-.venv
+.venv/
+.env/
+virtualenv/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# Conda environments
+conda-env/
+*.conda
+environment.yml.lock
+
+# pip cache
+.cache/
+pip-cache/
+
+# =============================================================================
+# DATA FILES (downloaded/generated locally)
+# =============================================================================
+# CIFAR-10, CIFAR-100, and other datasets should be downloaded by the user
+# Run the experiments to auto-download: python real_experiments.py --mode single
+
+code/data/
+data/
+*.tar.gz
+*.tar
+*.zip
+
+# Sensitive/private data
+data/real_data/
+data/private/
+*.csv
+*.xlsx
+*.db
+*.sqlite
+
+# =============================================================================
+# MODEL CHECKPOINTS & TRAINED WEIGHTS
+# =============================================================================
+# These are generated during training - too large for git
+
+*.ckpt
+*.pth
+*.pt
+*.h5
+*.pkl
+*.pickle
+*.safetensors
+checkpoints/
+saved_models/
+weights/
+
+# =============================================================================
+# EXPERIMENT OUTPUTS & LOGS
+# =============================================================================
+# Regenerate by running experiments locally
+
+experiments/
+results/dsain_*/
+logs/
+runs/
+tensorboard/
+wandb/
+mlruns/
+
+# Keep only result summaries
+!results/README.md
+!results/*.json
+
+# =============================================================================
+# JUPYTER NOTEBOOKS
+# =============================================================================
+
+.ipynb_checkpoints/
 *.ipynb
+
+# =============================================================================
+# IDE & EDITOR CONFIGURATIONS
+# =============================================================================
 
 # PyCharm
 .idea/
 
-# VS Code
-.vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
 
-# LaTeX auxiliary files
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# =============================================================================
+# LaTeX AUXILIARY FILES
+# =============================================================================
+
 *.aux
 *.bbl
 *.blg
@@ -53,72 +166,96 @@ env/
 *.fdb_latexmk
 *.fls
 *.synctex.gz
+*.synctex(busy)
 *.nav
 *.snm
 *.vrb
 *.dvi
 *.ps
+*.pdf
+*.lof
+*.lot
+*.bcf
+*.run.xml
 
-# LaTeX output (keep only main.pdf for submission)
-latex/*.pdf
-!latex/main.pdf
+# =============================================================================
+# OPERATING SYSTEM FILES
+# =============================================================================
 
-# Generated figures (track these for reproducibility)
-# figures/*.pdf
-# figures/*.png
-# figures/*.json
-
-# Data files (if containing sensitive information)
-data/real_data/
-data/private/
-*.csv
-*.xlsx
-*.db
-*.sqlite
-
-# System files
+# macOS
 .DS_Store
-Thumbs.db
-desktop.ini
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
 
-# Secrets and credentials
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# SECRETS & CREDENTIALS
+# =============================================================================
+# NEVER commit secrets to version control
+
 .env
 .env.local
+.env.*.local
 *.key
 *.pem
 *.p12
+*.pfx
 secrets/
 credentials/
 config/local.py
 *_secret.txt
+*_secret.json
+*.secret
 
-# Experimental outputs
-experiments/logs/
-experiments/checkpoints/
-experiments/results/*.csv
-*.ckpt
-*.pth
-*.h5
-*.pkl
-*.pickle
+# API keys
+api_keys.py
+api_keys.json
 
-# Submission documents (keep local, do not push to repository)
-SUBMISSION_CHECKLIST.md
-*Checklist*.md
+# =============================================================================
+# TEMPORARY & CACHE FILES
+# =============================================================================
 
-# Experiment results (keep local, large files)
-results/dsain_*/
-!results/README.md
-
-# Temporary files
 *.tmp
 *.temp
-*.swp
-*.swo
-*~
+*.bak
+*.cache
+.cache/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
 
-# OS generated
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-code/data/
+# =============================================================================
+# DOCUMENTATION BUILD (if using Sphinx or similar)
+# =============================================================================
+
+docs/_build/
+site/
+
+# =============================================================================
+# SUBMISSION & REVIEW FILES (kept local)
+# =============================================================================
+
+SUBMISSION_CHECKLIST.md
+*Checklist*.md
+review_response*.md
+reviewer_comments*.txt

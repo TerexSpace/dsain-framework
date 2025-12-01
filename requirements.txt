@@ -1,0 +1,40 @@
+# =============================================================================
+# DSAIN Framework - Python Dependencies
+# =============================================================================
+# Install all dependencies with: pip install -r requirements.txt
+# Tested with Python 3.10-3.13
+# =============================================================================
+
+# Core scientific computing
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Machine learning framework
+# NOTE: For GPU support, install pytorch separately:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+# For CPU-only (default):
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Visualization
+matplotlib>=3.7.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# =============================================================================
+# Optional Dependencies (uncomment if needed)
+# =============================================================================
+
+# For LEAF dataset experiments (Section 5.3)
+# pillow>=9.0.0
+
+# For blockchain provenance verification
+# hashlib (standard library, no install needed)
+
+# For reproducibility analysis
+# seaborn>=0.12.0
+
+# For Jupyter notebook experiments
+# jupyter>=1.0.0
+# ipykernel>=6.0.0
