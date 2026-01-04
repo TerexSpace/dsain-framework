@@ -259,3 +259,6 @@ SUBMISSION_CHECKLIST.md
 *Checklist*.md
 review_response*.md
 reviewer_comments*.txt
+
+# Add nul to gitignore
+echo nul nul
