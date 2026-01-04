@@ -1,0 +1,65 @@
+{
+  "total_experiments": 10,
+  "successful": 0,
+  "failed": 10,
+  "total_time_minutes": 122.02788325945536,
+  "configuration": {
+    "num_rounds": 50,
+    "num_clients": 20,
+    "participation_rate": 0.25,
+    "clients_per_round": 5
+  },
+  "results": [
+    {
+      "name": "1_baseline_resnet18",
+      "success": false,
+      "time_minutes": 16.002262286345164
+    },
+    {
+      "name": "2_arch_mobilenet",
+      "success": false,
+      "time_minutes": 10.002892251809438
+    },
+    {
+      "name": "3_hetero_alpha0.1",
+      "success": false,
+      "time_minutes": 12.001935716470083
+    },
+    {
+      "name": "3_hetero_alpha1.0",
+      "success": false,
+      "time_minutes": 12.002304446697234
+    },
+    {
+      "name": "4_byzantine_0pct",
+      "success": false,
+      "time_minutes": 12.002877815564473
+    },
+    {
+      "name": "4_byzantine_20pct",
+      "success": false,
+      "time_minutes": 12.002913928031921
+    },
+    {
+      "name": "5_privacy_eps2.0",
+      "success": false,
+      "time_minutes": 12.00243238210678
+    },
+    {
+      "name": "5_privacy_eps8.0",
+      "success": false,
+      "time_minutes": 12.002467266718547
+    },
+    {
+      "name": "6_compression_0.1",
+      "success": false,
+      "time_minutes": 12.002590719858805
+    },
+    {
+      "name": "6_compression_1.0",
+      "success": false,
+      "time_minutes": 12.002387205759684
+    }
+  ],
+  "timestamp": "2026-01-04T14:29:34.049449"
+}
