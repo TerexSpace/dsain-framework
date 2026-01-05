@@ -210,11 +210,15 @@ class FederatedClient:
         self.device = DEVICE
 
         # Create data loader
+        # Auto-detect num_workers: 0 for Windows, 4 for Linux
+        import platform
+        num_workers = 0 if platform.system() == 'Windows' else 4
+
         self.train_loader = DataLoader(
             dataset,
             batch_size=config.batch_size,
             shuffle=True,
-            num_workers=0,  # Set to 0 for Windows compatibility
+            num_workers=num_workers,
             pin_memory=True if torch.cuda.is_available() else False
         )
 
@@ -382,7 +386,10 @@ def run_baseline_experiment(config: ExperimentConfig) -> Dict:
 
     # Load dataset
     train_dataset, test_dataset = load_dataset(config)
-    test_loader = DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=0)
+    # Auto-detect num_workers: 0 for Windows, 4 for Linux
+    import platform
+    num_workers = 0 if platform.system() == 'Windows' else 4
+    test_loader = DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=num_workers, pin_memory=torch.cuda.is_available())
 
     # Partition data
     client_datasets = partition_dataset(train_dataset, config)
