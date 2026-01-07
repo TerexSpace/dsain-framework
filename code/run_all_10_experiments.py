@@ -302,7 +302,9 @@ class FederatedServer:
 
         for key in current_weights.keys():
             if key in aggregated_gradient:
-                current_weights[key] += aggregated_gradient[key]
+                # Only update floating point parameters (skip running_mean, running_var counts)
+                if current_weights[key].dtype in (torch.float32, torch.float16, torch.float64, torch.bfloat16):
+                    current_weights[key] = current_weights[key] + aggregated_gradient[key].to(current_weights[key].dtype)
 
         self.model.load_state_dict(current_weights)
 
