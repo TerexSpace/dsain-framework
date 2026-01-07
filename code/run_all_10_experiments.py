@@ -3,7 +3,7 @@
 Run All 10 Critical Experiments for TMLR Publication
 ====================================================
 
-Single script to run all experiments sequentially on cloud Pod.
+Single script to run all experiments sequentially on cloud Pod (RunPod compatible).
 Estimated time: 33 hours on A5000 GPU
 Estimated cost: $9.24 on RunPod A5000 @ $0.28/hour
 
@@ -20,7 +20,7 @@ import time
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, asdict
 import numpy as np
 import torch
@@ -31,17 +31,27 @@ import torchvision
 import torchvision.transforms as transforms
 from tqdm import tqdm
 
+# Get script directory for relative imports
+SCRIPT_DIR = Path(__file__).parent.absolute()
+sys.path.insert(0, str(SCRIPT_DIR))
+
 # Import required modules
 from modern_architectures import get_model
 from data_heterogeneity import dirichlet_partition
 from byzantine_attacks import LabelFlippingAttack
 from privacy_accounting import DPOptimizer
 
+# Set up output directories before logging
+RESULTS_DIR = SCRIPT_DIR.parent / 'results' / 'final_experiments'
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+DATA_DIR = SCRIPT_DIR.parent / 'data'
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('experiment_run.log'),
+        logging.FileHandler(RESULTS_DIR / 'experiment_run.log'),
         logging.StreamHandler()
     ]
 )
@@ -52,12 +62,21 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Auto-detect num_workers: 0 for Windows (multiprocessing issues), 4 for Linux
 NUM_WORKERS = 0 if sys.platform == 'win32' else 4
 
+# Enable CUDA deterministic mode for reproducibility
+if torch.cuda.is_available():
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
 logger.info(f"Using device: {DEVICE}")
 logger.info(f"Platform: {sys.platform}")
+logger.info(f"Script directory: {SCRIPT_DIR}")
+logger.info(f"Results directory: {RESULTS_DIR}")
+logger.info(f"Data directory: {DATA_DIR}")
 logger.info(f"DataLoader num_workers: {NUM_WORKERS}")
 if torch.cuda.is_available():
     logger.info(f"GPU: {torch.cuda.get_device_name(0)}")
     logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
+    logger.info(f"CUDA version: {torch.version.cuda}")
 
 
 # =============================================================================
@@ -78,7 +97,7 @@ class ExperimentConfig:
 
     # Dataset
     dataset: str = 'cifar10'
-    data_root: str = './data'
+    data_root: str = str(DATA_DIR)
 
     # Federated Learning
     num_clients: int = 20
@@ -324,9 +343,12 @@ def run_single_experiment(config: ExperimentConfig) -> Dict:
 
     start_time = time.time()
 
-    # Set random seed
+    # Set random seed for reproducibility
     torch.manual_seed(config.seed)
     np.random.seed(config.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(config.seed)
+        torch.cuda.manual_seed_all(config.seed)
 
     # Load dataset
     logger.info("Loading dataset...")
@@ -349,8 +371,10 @@ def run_single_experiment(config: ExperimentConfig) -> Dict:
 
     # Partition data across clients
     logger.info(f"Partitioning data (Dirichlet α={config.dirichlet_alpha})...")
+    # Convert targets to numpy array (CIFAR-10 returns list)
+    targets_np = np.array(trainset.targets)
     client_indices = dirichlet_partition(
-        trainset.targets,
+        targets_np,
         num_clients=config.num_clients,
         alpha=config.dirichlet_alpha,
         min_samples_per_client=1  # Allow small client datasets for heterogeneous scenarios
@@ -624,9 +648,8 @@ def main():
         logger.info(f"GPU: {torch.cuda.get_device_name(0)}")
     logger.info("="*80)
 
-    # Create output directory
-    output_dir = Path('results/final_experiments')
-    output_dir.mkdir(parents=True, exist_ok=True)
+    # Use the predefined output directory
+    output_dir = RESULTS_DIR
     logger.info(f"Output directory: {output_dir}")
 
     # Get all experiments
