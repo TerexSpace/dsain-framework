@@ -528,5 +528,68 @@ def demo_privacy_accounting():
     logger.info("="*70)
 
 
+class DPOptimizer(torch.optim.SGD):
+    """
+    Simple DP-SGD optimizer with gradient clipping and noise addition.
+
+    Wraps torch.optim.SGD and adds differential privacy guarantees.
+    """
+
+    def __init__(self, params, lr, epsilon, delta, clip_norm, momentum=0.9, weight_decay=1e-4):
+        """
+        Initialize DP optimizer.
+
+        Args:
+            params: Model parameters
+            lr: Learning rate
+            epsilon: Privacy budget epsilon
+            delta: Privacy budget delta
+            clip_norm: Gradient clipping norm
+            momentum: Momentum parameter
+            weight_decay: Weight decay
+        """
+        super().__init__(params, lr=lr, momentum=momentum, weight_decay=weight_decay)
+
+        self.epsilon = epsilon
+        self.delta = delta
+        self.clip_norm = clip_norm
+
+        # Compute noise multiplier
+        c = np.sqrt(2 * np.log(1.25 / delta))
+        self.noise_multiplier = c / epsilon
+        self.noise_scale = self.noise_multiplier * clip_norm
+
+        logger.info(f"DP-SGD initialized: ε={epsilon}, δ={delta}, clip={clip_norm}, noise_scale={self.noise_scale:.4f}")
+
+    def step(self, closure=None):
+        """
+        Perform a single optimization step with DP guarantees.
+
+        Args:
+            closure: Optional closure for re-evaluation
+        """
+        loss = None
+        if closure is not None:
+            loss = closure()
+
+        # Clip gradients and add noise
+        for group in self.param_groups:
+            for param in group['params']:
+                if param.grad is not None:
+                    # Clip gradient
+                    grad_norm = torch.norm(param.grad, p=2)
+                    if grad_norm > self.clip_norm:
+                        param.grad = param.grad * (self.clip_norm / grad_norm)
+
+                    # Add Gaussian noise
+                    noise = torch.randn_like(param.grad) * self.noise_scale
+                    param.grad = param.grad + noise
+
+        # Call parent SGD step
+        super().step()
+
+        return loss
+
+
 if __name__ == "__main__":
     demo_privacy_accounting()
