@@ -91,6 +91,10 @@ def dirichlet_partition(
     # Filter out clients with too few samples
     client_indices = [idx for idx in client_indices if len(idx) >= min_samples_per_client]
 
+    if len(client_indices) == 0:
+        raise ValueError(f"No clients have >= {min_samples_per_client} samples. "
+                        f"Try reducing min_samples_per_client or increasing alpha.")
+
     logger.info(f"Dirichlet partition (alpha={alpha}): {len(client_indices)} clients")
     logger.info(f"Samples per client: min={min(len(idx) for idx in client_indices)}, "
                 f"max={max(len(idx) for idx in client_indices)}, "
