@@ -48,7 +48,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# Auto-detect num_workers: 0 for Windows (multiprocessing issues), 4 for Linux
+NUM_WORKERS = 0 if sys.platform == 'win32' else 4
+
 logger.info(f"Using device: {DEVICE}")
+logger.info(f"Platform: {sys.platform}")
+logger.info(f"DataLoader num_workers: {NUM_WORKERS}")
 if torch.cuda.is_available():
     logger.info(f"GPU: {torch.cuda.get_device_name(0)}")
     logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
@@ -339,7 +345,7 @@ def run_single_experiment(config: ExperimentConfig) -> Dict:
     else:
         raise ValueError(f"Unsupported dataset: {config.dataset}")
 
-    test_loader = DataLoader(testset, batch_size=256, shuffle=False, num_workers=0)
+    test_loader = DataLoader(testset, batch_size=256, shuffle=False, num_workers=NUM_WORKERS)
 
     # Partition data across clients
     logger.info(f"Partitioning data (Dirichlet α={config.dirichlet_alpha})...")
@@ -358,7 +364,7 @@ def run_single_experiment(config: ExperimentConfig) -> Dict:
             client_dataset,
             batch_size=config.batch_size,
             shuffle=True,
-            num_workers=0
+            num_workers=NUM_WORKERS
         )
 
         client = FederatedClient(i, config, client_loader)
