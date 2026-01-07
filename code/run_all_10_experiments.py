@@ -352,7 +352,6 @@ def run_single_experiment(config: ExperimentConfig) -> Dict:
     client_indices = dirichlet_partition(
         trainset.targets,
         num_clients=config.num_clients,
-        num_classes=config.num_classes,
         alpha=config.dirichlet_alpha
     )
 
