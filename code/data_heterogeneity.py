@@ -63,6 +63,10 @@ def dirichlet_partition(
 
     # Sample Dirichlet distribution for each class
     for class_idx, indices in enumerate(indices_per_class):
+        # Skip empty classes
+        if len(indices) == 0:
+            continue
+
         np.random.shuffle(indices)
 
         # Sample proportions from Dirichlet
