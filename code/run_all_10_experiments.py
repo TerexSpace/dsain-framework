@@ -352,7 +352,8 @@ def run_single_experiment(config: ExperimentConfig) -> Dict:
     client_indices = dirichlet_partition(
         trainset.targets,
         num_clients=config.num_clients,
-        alpha=config.dirichlet_alpha
+        alpha=config.dirichlet_alpha,
+        min_samples_per_client=1  # Allow small client datasets for heterogeneous scenarios
     )
 
     # Create clients
