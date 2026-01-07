@@ -20,7 +20,7 @@ import time
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from dataclasses import dataclass, asdict
 import numpy as np
 import torch
