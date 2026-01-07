@@ -157,6 +157,9 @@ def geometric_median_aggregate(gradients: List[torch.Tensor], max_iter: int = 10
     if len(gradients) == 0:
         raise ValueError("No gradients to aggregate")
 
+    # Convert to float for consistent computation
+    gradients = [g.float() for g in gradients]
+    
     # Initialize with mean
     median = torch.mean(torch.stack(gradients), dim=0)
 
@@ -287,7 +290,9 @@ class FederatedServer:
             if self.config.byzantine_defense and self.config.byzantine_frac > 0:
                 aggregated[key] = geometric_median_aggregate(grad_list)
             else:
-                aggregated[key] = torch.mean(torch.stack(grad_list), dim=0)
+                # Convert to float for consistent dtype in mean computation
+                stacked = torch.stack([g.float() for g in grad_list])
+                aggregated[key] = torch.mean(stacked, dim=0)
 
         return aggregated
 

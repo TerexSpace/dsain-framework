@@ -350,6 +350,10 @@ class LabelFlippingAttack(ByzantineAttack):
 
         return flipped
 
+    def apply(self, labels: torch.Tensor) -> torch.Tensor:
+        """Alias for flip_labels for consistency with experiment script."""
+        return self.flip_labels(labels)
+
     def attack(self, delta: Dict[str, torch.Tensor], **kwargs) -> Dict[str, torch.Tensor]:
         """For consistency with interface, but label flipping affects data not gradients."""
         logger.warning("LabelFlippingAttack should be applied to labels, not gradients.")
