@@ -1,0 +1,64 @@
+{
+  "config": {
+    "model_name": "mobilenetv2",
+    "num_classes": 10,
+    "dataset": "cifar10",
+    "data_root": "./data",
+    "num_clients": 20,
+    "participation_rate": 0.25,
+    "num_rounds": 50,
+    "local_epochs": 5,
+    "batch_size": 32,
+    "learning_rate": 0.01,
+    "momentum": 0.9,
+    "weight_decay": 0.0001,
+    "heterogeneity_type": "dirichlet",
+    "dirichlet_alpha": 0.5,
+    "quantity_skew": "uniform",
+    "feature_skew": false,
+    "compression_ratio": 0.22,
+    "byzantine_frac": 0.0,
+    "dp_epsilon": Infinity,
+    "dp_delta": 1e-05,
+    "gradient_clip": 1.0,
+    "seed": 42,
+    "eval_every": 10,
+    "save_checkpoints": false,
+    "quick_test": false
+  },
+  "final_accuracy": 0.7742,
+  "final_loss": 0.7826738041639328,
+  "total_time_seconds": 4123.662869930267,
+  "total_time_hours": 1.1454619083139632,
+  "model_parameters": 532138,
+  "history": {
+    "round": [
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "accuracy": [
+      0.5485,
+      0.597,
+      0.7247,
+      0.7787,
+      0.7742
+    ],
+    "loss": [
+      1.5597708559036254,
+      1.3883232426643373,
+      0.892019419670105,
+      0.7629897159337997,
+      0.7826738041639328
+    ],
+    "time": [
+      815.9693059921265,
+      1631.9687452316284,
+      2405.6461737155914,
+      3242.582641839981,
+      4123.662060260773
+    ]
+  }
+}

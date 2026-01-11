@@ -15,14 +15,41 @@
 # VS Code configuration (user-specific settings)
 .vscode/
 
+# Claude/AI assistant configuration
+.claude/
+
 # LaTeX source files and outputs (manuscript kept separate)
-latex/
+# latex/  # Uncommented to track latex folder for TMLR
 
 # Generated figures (regenerate locally using code/dsain.py or code/real_experiments.py)
 figures/
 
 # Appendices (if any)
 appendices/
+
+# JMLR manuscript folder (old version, not for submission)
+jmlr_manuscript/
+
+# Markdown guide files (development notes, not for submission)
+*.md
+!README.md
+!code/README.md
+
+# TMLR Submission folders (keep local, submit separately)
+TMLR_Submission/
+TMLR_Supplimentary_Materials/
+
+# Session/Progress files
+*SESSION*.md
+*PROGRESS*.md
+*GUIDE*.md
+*CHECKLIST*.md
+*SUMMARY*.md
+*PLAN*.md
+START_HERE.txt
+HYBRID_APPROACH_START_HERE.txt
+READY_TO_RUN.md
+GENERATED_RESULTS_SECTION.tex
 
 # =============================================================================
 # PYTHON DEPENDENCIES & VIRTUAL ENVIRONMENTS

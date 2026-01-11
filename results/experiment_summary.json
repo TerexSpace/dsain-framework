@@ -1,0 +1,39 @@
+{
+  "total_experiments": 10,
+  "successful": 0,
+  "failed": 10,
+  "total_time_hours": 0.1201823130581114,
+  "results": {
+    "E1": {
+      "error": "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Long"
+    },
+    "E2": {
+      "error": "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Long"
+    },
+    "E3": {
+      "error": "'LabelFlippingAttack' object has no attribute 'apply'"
+    },
+    "E4": {
+      "error": "'LabelFlippingAttack' object has no attribute 'apply'"
+    },
+    "E5": {
+      "error": "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Long"
+    },
+    "E6": {
+      "error": "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Long"
+    },
+    "E7": {
+      "error": "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Long"
+    },
+    "E8": {
+      "error": "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Long"
+    },
+    "E9": {
+      "error": "mean(): could not infer output dtype. Input dtype must be either a floating point or complex dtype. Got: Long"
+    },
+    "E10": {
+      "error": "'LabelFlippingAttack' object has no attribute 'apply'"
+    }
+  },
+  "timestamp": "2026-01-07T10:33:37.796209"
+}

@@ -1,541 +1,378 @@
 #!/usr/bin/env python3
 """
-Publication-Quality Figure Generation for TMLR Submission
-==========================================================
-
-Generates all 8 figures for the DSAIN manuscript in IEEE-style PDF format.
-
-Usage:
-    python generate_figures.py --results_dir ../results --output_dir ../latex/figures
+Generate publication-quality figures from E1-E10 experimental results.
+Creates figures for TMLR supplementary materials using ACTUAL experimental data.
 
 Author: Almas Ospanov
 License: MIT
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib
-import seaborn as sns
-from pathlib import Path
 import json
-import argparse
-from typing import Dict, List, Tuple
+import os
+import sys
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend for servers
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Configure matplotlib for publication quality
-matplotlib.rcParams['pdf.fonttype'] = 42  # TrueType fonts
-matplotlib.rcParams['ps.fonttype'] = 42
-matplotlib.rcParams['font.family'] = 'serif'
-matplotlib.rcParams['font.serif'] = ['Times New Roman', 'Times', 'DejaVu Serif']
-matplotlib.rcParams['font.size'] = 10
-matplotlib.rcParams['axes.labelsize'] = 10
-matplotlib.rcParams['axes.titlesize'] = 11
-matplotlib.rcParams['xtick.labelsize'] = 9
-matplotlib.rcParams['ytick.labelsize'] = 9
-matplotlib.rcParams['legend.fontsize'] = 9
-matplotlib.rcParams['figure.titlesize'] = 11
+# Set publication style
+plt.rcParams.update({
+    'font.size': 12,
+    'font.family': 'serif',
+    'axes.labelsize': 14,
+    'axes.titlesize': 14,
+    'legend.fontsize': 11,
+    'xtick.labelsize': 11,
+    'ytick.labelsize': 11,
+    'figure.figsize': (8, 6),
+    'figure.dpi': 150,
+    'savefig.dpi': 300,
+    'savefig.bbox': 'tight',
+    'pdf.fonttype': 42,
+    'ps.fonttype': 42,
+})
 
-# IEEE style colors
-COLORS = {
-    'dsain': '#1f77b4',      # Blue
-    'fedavg': '#ff7f0e',     # Orange
-    'fedprox': '#2ca02c',    # Green
-    'scaffold': '#d62728',   # Red
-    'krum': '#9467bd',       # Purple
-    'bulyan': '#8c564b',     # Brown
-    'trimmed': '#e377c2',    # Pink
-    'median': '#7f7f7f',     # Gray
-    'centralized': '#000000' # Black
-}
+# Paths
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+RESULTS_DIR = os.path.join(SCRIPT_DIR, '..', 'results')
+FIGURES_DIR = os.path.join(SCRIPT_DIR, '..', 'TMLR_Supplimentary_Materials', 'figures')
 
-def setup_figure(width=3.5, height=2.5):
-    """
-    Create figure with IEEE column width.
+os.makedirs(FIGURES_DIR, exist_ok=True)
 
-    Args:
-        width: Width in inches (3.5 for single column, 7.16 for double)
-        height: Height in inches
-    """
-    fig, ax = plt.subplots(figsize=(width, height))
-    return fig, ax
+def load_experiment(exp_id):
+    """Load experiment results by ID (e.g., 'E1')."""
+    pattern = f"{exp_id}_"
+    for fname in os.listdir(RESULTS_DIR):
+        if fname.startswith(pattern) and fname.endswith('.json'):
+            filepath = os.path.join(RESULTS_DIR, fname)
+            with open(filepath, 'r') as f:
+                data = json.load(f)
+                print(f"  Loaded {fname}")
+                return data
+    print(f"  WARNING: Could not find {exp_id}")
+    return None
 
+def plot_convergence_curves():
+    """Plot convergence curves for baseline comparison (E1 vs E2)."""
+    print("\n[1/6] Generating convergence_curves...")
 
-def figure1_system_architecture(output_dir: Path):
-    """
-    Figure 1: DSAIN System Architecture (will be created as TikZ in LaTeX)
+    e1 = load_experiment('E1')  # DSAIN baseline
+    e2 = load_experiment('E2')  # FedAvg baseline
 
-    For now, create a placeholder or use TikZ code directly.
-    """
-    # This should be a TikZ diagram - create the LaTeX code
-    tikz_code = r"""
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}[
-    node distance=1.5cm,
-    block/.style={rectangle, draw, fill=blue!20, text width=2.5cm, text centered, rounded corners, minimum height=1cm},
-    small/.style={rectangle, draw, fill=green!20, text width=1.8cm, text centered, rounded corners, minimum height=0.7cm},
-    arrow/.style={thick,->,>=stealth}
-]
+    if not e1 or not e2:
+        print("  ERROR: Missing E1 or E2 data")
+        return False
 
-% Clients
-\node[small] (c1) {Client 1};
-\node[small, right=0.3cm of c1] (c2) {Client 2};
-\node[right=0.3cm of c2] (cdots) {$\cdots$};
-\node[small, right=0.3cm of cdots] (cn) {Client $n$};
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-% Local training
-\node[block, below=of c2] (local) {Local Training\\(FedSov)};
+    rounds = e1['history']['round']
+    dsain_acc = [a * 100 for a in e1['history']['accuracy']]
+    fedavg_acc = [a * 100 for a in e2['history']['accuracy']]
 
-% Compression
-\node[block, below=of local] (compress) {Gradient\\Compression\\(Top-$k$)};
-
-% Privacy
-\node[block, below=of compress] (privacy) {Differential Privacy\\(Clipping + Noise)};
-
-% Server aggregation
-\node[block, below=of privacy, fill=orange!20] (server) {Byzantine-Resilient\\Aggregation (ByzFed)};
-
-% Blockchain
-\node[block, right=1.5cm of server, fill=purple!20] (blockchain) {Blockchain\\Provenance};
-
-% Global model
-\node[block, below=of server] (global) {Global Model\\Update};
-
-% Arrows
-\draw[arrow] (c1) -- (local);
-\draw[arrow] (c2) -- (local);
-\draw[arrow] (cn) -- (local);
-\draw[arrow] (local) -- (compress);
-\draw[arrow] (compress) -- (privacy);
-\draw[arrow] (privacy) -- (server);
-\draw[arrow] (server) -- (blockchain);
-\draw[arrow] (server) -- (global);
-\draw[arrow, dashed] (global) -| (c1);
-
-% Labels
-\node[left=0.5cm of compress, text width=2cm] {\small 78\% comm.\\reduction};
-\node[left=0.5cm of privacy, text width=2cm] {\small $(\epsilon,\delta)$-DP};
-\node[right=0.5cm of server, text width=2cm] {\small $f < n/3$\\resilience};
-
-\end{tikzpicture}
-\caption{DSAIN system architecture showing the three-layer design: (1) communication-efficient local training with gradient compression, (2) privacy-preserving noise addition, and (3) Byzantine-resilient aggregation with blockchain provenance tracking.}
-\label{fig:architecture}
-\end{figure}
-"""
-
-    # Save TikZ code
-    tikz_file = output_dir / "figure1_architecture.tex"
-    with open(tikz_file, 'w') as f:
-        f.write(tikz_code)
-
-    print(f"[OK] Figure 1 (TikZ): {tikz_file}")
-
-
-def figure2_convergence_curves(output_dir: Path):
-    """
-    Figure 2: Convergence curves with confidence bands
-    """
-    # Generate synthetic data (replace with actual results)
-    rounds = np.arange(1, 201)
-
-    # DSAIN
-    dsain_mean = 0.55 + 0.35 * (1 - np.exp(-rounds / 50))
-    dsain_std = 0.03 * np.exp(-rounds / 100)
-
-    # FedAvg
-    fedavg_mean = 0.50 + 0.38 * (1 - np.exp(-rounds / 60))
-    fedavg_std = 0.04 * np.exp(-rounds / 80)
-
-    # SCAFFOLD
-    scaffold_mean = 0.52 + 0.39 * (1 - np.exp(-rounds / 55))
-    scaffold_std = 0.03 * np.exp(-rounds / 90)
-
-    # Centralized
-    centralized = 0.932 * np.ones_like(rounds)
-
-    fig, ax = setup_figure(width=3.5, height=2.5)
-
-    # Plot with confidence bands
-    ax.plot(rounds, dsain_mean, label='DSAIN (ours)', color=COLORS['dsain'], linewidth=1.5)
-    ax.fill_between(rounds, dsain_mean - dsain_std, dsain_mean + dsain_std,
-                     alpha=0.2, color=COLORS['dsain'])
-
-    ax.plot(rounds, fedavg_mean, label='FedAvg', color=COLORS['fedavg'],
-            linewidth=1.5, linestyle='--')
-    ax.fill_between(rounds, fedavg_mean - fedavg_std, fedavg_mean + fedavg_std,
-                     alpha=0.2, color=COLORS['fedavg'])
-
-    ax.plot(rounds, scaffold_mean, label='SCAFFOLD', color=COLORS['scaffold'],
-            linewidth=1.5, linestyle='-.')
-    ax.fill_between(rounds, scaffold_mean - scaffold_std, scaffold_mean + scaffold_std,
-                     alpha=0.2, color=COLORS['scaffold'])
-
-    ax.axhline(centralized[0], label='Centralized', color=COLORS['centralized'],
-               linewidth=1, linestyle=':')
+    ax.plot(rounds, dsain_acc, 'b-o', linewidth=2, markersize=6,
+            label=f"DSAIN (final: {e1['final_accuracy']*100:.2f}%)")
+    ax.plot(rounds, fedavg_acc, 'r-s', linewidth=2, markersize=6,
+            label=f"FedAvg (final: {e2['final_accuracy']*100:.2f}%)")
 
     ax.set_xlabel('Communication Round')
-    ax.set_ylabel('Test Accuracy')
-    ax.set_ylim([0.5, 0.95])
-    ax.grid(True, alpha=0.3, linestyle='--', linewidth=0.5)
-    ax.legend(loc='lower right', framealpha=0.9)
+    ax.set_ylabel('Test Accuracy (%)')
+    ax.set_title('Convergence Comparison: DSAIN vs FedAvg\n(CIFAR-10, ResNet18, α=0.5, 500 rounds)')
+    ax.legend(loc='lower right')
+    ax.set_xlim([0, 520])
+    ax.set_ylim([40, 85])
+    ax.grid(True, alpha=0.3)
 
-    plt.tight_layout()
-    plt.savefig(output_dir / 'figure2_convergence.pdf', dpi=300, bbox_inches='tight')
-    plt.close()
+    fig.savefig(os.path.join(FIGURES_DIR, 'convergence_curves.pdf'))
+    fig.savefig(os.path.join(FIGURES_DIR, 'convergence_curves.png'))
+    plt.close(fig)
+    print("  -> Saved convergence_curves.pdf/png")
+    return True
 
-    print(f"[OK] Figure 2: {output_dir / 'figure2_convergence.pdf'}")
+def plot_byzantine_resilience():
+    """Plot Byzantine resilience across attack intensities (E1, E10, E3)."""
+    print("\n[2/6] Generating byzantine_resilience...")
 
+    e1 = load_experiment('E1')   # 0% Byzantine
+    e10 = load_experiment('E10') # 10% Byzantine
+    e3 = load_experiment('E3')   # 20% Byzantine
 
-def figure3_byzantine_comparison(output_dir: Path):
-    """
-    Figure 3: Byzantine attack comparison (bar chart)
-    """
-    methods = ['FedAvg', 'Krum', 'Trimmed\nMean', 'Bulyan', 'DSAIN\n(ours)']
+    if not all([e1, e10, e3]):
+        print("  ERROR: Missing E1, E10, or E3 data")
+        return False
 
-    # Accuracy under different attacks (synthetic data - replace with actual)
-    no_attack = [0.883, 0.883, 0.883, 0.870, 0.905]
-    sign_flip = [0.126, 0.391, 0.242, 0.385, 0.422]
-    little_enough = [0.234, 0.412, 0.318, 0.421, 0.467]
-    minmax = [0.189, 0.356, 0.289, 0.398, 0.451]
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    x = np.arange(len(methods))
-    width = 0.2
+    byzantine_fracs = [0, 10, 20]
+    accuracies = [
+        e1['final_accuracy'] * 100,
+        e10['final_accuracy'] * 100,
+        e3['final_accuracy'] * 100
+    ]
 
-    fig, ax = setup_figure(width=7.16, height=2.5)  # Double column
-
-    ax.bar(x - 1.5*width, no_attack, width, label='No Attack', color='#2ecc71')
-    ax.bar(x - 0.5*width, sign_flip, width, label='Sign Flipping', color='#e74c3c')
-    ax.bar(x + 0.5*width, little_enough, width, label='Little Is Enough', color='#9b59b6')
-    ax.bar(x + 1.5*width, minmax, width, label='Min-Max', color='#f39c12')
-
-    ax.set_xlabel('Method')
-    ax.set_ylabel('Test Accuracy')
-    ax.set_xticks(x)
-    ax.set_xticklabels(methods)
-    ax.set_ylim([0, 1.0])
-    ax.legend(loc='upper left', ncol=4, framealpha=0.9)
-    ax.grid(True, axis='y', alpha=0.3, linestyle='--', linewidth=0.5)
-
-    # Add value labels on bars
-    for i, (na, sf, le, mm) in enumerate(zip(no_attack, sign_flip, little_enough, minmax)):
-        if i == len(methods) - 1:  # Highlight DSAIN
-            ax.text(i - 1.5*width, na + 0.02, f'{na:.2f}', ha='center', fontsize=7, fontweight='bold')
-            ax.text(i - 0.5*width, sf + 0.02, f'{sf:.2f}', ha='center', fontsize=7, fontweight='bold')
-            ax.text(i + 0.5*width, le + 0.02, f'{le:.2f}', ha='center', fontsize=7, fontweight='bold')
-            ax.text(i + 1.5*width, mm + 0.02, f'{mm:.2f}', ha='center', fontsize=7, fontweight='bold')
-
-    plt.tight_layout()
-    plt.savefig(output_dir / 'figure3_byzantine.pdf', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    print(f"[OK] Figure 3: {output_dir / 'figure3_byzantine.pdf'}")
-
-
-def figure4_communication_accuracy_tradeoff(output_dir: Path):
-    """
-    Figure 4: Communication cost vs. accuracy tradeoff
-    """
-    # Methods with (communication GB, accuracy)
-    methods_data = {
-        'FedAvg': (4.82, 0.884, 'o'),
-        'FedProx': (4.82, 0.889, 's'),
-        'SCAFFOLD': (9.64, 0.910, '^'),
-        'Krum': (4.82, 0.865, 'D'),
-        'Bulyan': (4.82, 0.858, 'v'),
-        'DSAIN (ours)': (1.06, 0.905, '*')
-    }
-
-    fig, ax = setup_figure(width=3.5, height=2.8)
-
-    for method, (comm, acc, marker) in methods_data.items():
-        if 'ours' in method:
-            ax.scatter(comm, acc, s=200, marker=marker,
-                      color=COLORS['dsain'], edgecolors='black', linewidths=1.5,
-                      label=method, zorder=10)
-        else:
-            color = COLORS.get(method.lower().split()[0], '#888888')
-            ax.scatter(comm, acc, s=100, marker=marker,
-                      color=color, alpha=0.7, label=method, zorder=5)
-
-    # Add Pareto frontier line
-    pareto_x = [1.06, 4.82]
-    pareto_y = [0.905, 0.910]
-    ax.plot(pareto_x, pareto_y, 'k--', alpha=0.3, linewidth=1, zorder=1)
-
-    ax.set_xlabel('Communication Cost (GB)')
-    ax.set_ylabel('Test Accuracy')
-    ax.set_xlim([0, 10.5])
-    ax.set_ylim([0.84, 0.92])
-    ax.grid(True, alpha=0.3, linestyle='--', linewidth=0.5)
-    ax.legend(loc='lower right', fontsize=8, framealpha=0.9)
-
-    # Annotate DSAIN advantage
-    ax.annotate('78% reduction\n+2.1pp accuracy',
-                xy=(1.06, 0.905), xytext=(2.5, 0.915),
-                arrowprops=dict(arrowstyle='->', color='red', lw=1),
-                fontsize=8, color='red', fontweight='bold',
-                bbox=dict(boxstyle='round,pad=0.3', facecolor='yellow', alpha=0.3))
-
-    plt.tight_layout()
-    plt.savefig(output_dir / 'figure4_tradeoff.pdf', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    print(f"[OK] Figure 4: {output_dir / 'figure4_tradeoff.pdf'}")
-
-
-def figure5_scalability(output_dir: Path):
-    """
-    Figure 5: Scalability plot (log-log scale)
-    """
-    clients = np.array([50, 100, 200, 500, 1000])
-
-    # Training time (hours) - synthetic data
-    dsain_time = 0.8 * clients**0.6  # Sub-linear scaling
-    fedavg_time = 1.2 * clients**0.7
-
-    # Communication volume (GB)
-    dsain_comm = 0.5 + 0.5 * np.log10(clients)
-    fedavg_comm = 2.0 + 2.5 * np.log10(clients)
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.16, 2.5))
-
-    # Plot 1: Training time
-    ax1.loglog(clients, dsain_time, 'o-', label='DSAIN (ours)',
-               color=COLORS['dsain'], linewidth=1.5, markersize=6)
-    ax1.loglog(clients, fedavg_time, 's--', label='FedAvg',
-               color=COLORS['fedavg'], linewidth=1.5, markersize=6)
-
-    ax1.set_xlabel('Number of Clients')
-    ax1.set_ylabel('Training Time (hours)')
-    ax1.grid(True, which='both', alpha=0.3, linestyle='--', linewidth=0.5)
-    ax1.legend(loc='upper left', framealpha=0.9)
-    ax1.set_title('(a) Training Time Scalability')
-
-    # Plot 2: Communication volume
-    ax2.semilogx(clients, dsain_comm, 'o-', label='DSAIN (ours)',
-                 color=COLORS['dsain'], linewidth=1.5, markersize=6)
-    ax2.semilogx(clients, fedavg_comm, 's--', label='FedAvg',
-                 color=COLORS['fedavg'], linewidth=1.5, markersize=6)
-
-    ax2.set_xlabel('Number of Clients')
-    ax2.set_ylabel('Communication Volume (GB)')
-    ax2.grid(True, alpha=0.3, linestyle='--', linewidth=0.5)
-    ax2.legend(loc='upper left', framealpha=0.9)
-    ax2.set_title('(b) Communication Scalability')
-
-    plt.tight_layout()
-    plt.savefig(output_dir / 'figure5_scalability.pdf', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    print(f"[OK] Figure 5: {output_dir / 'figure5_scalability.pdf'}")
-
-
-def figure6_privacy_utility_frontier(output_dir: Path):
-    """
-    Figure 6: Privacy-utility frontier
-    """
-    epsilons = np.array([0.5, 1.0, 2.0, 4.0, 8.0, np.inf])
-
-    # Accuracy for different epsilon values
-    dsain_acc = np.array([0.582, 0.714, 0.821, 0.873, 0.897, 0.905])
-    fedavg_acc = np.array([0.524, 0.651, 0.742, 0.835, 0.871, 0.884])
-
-    # Error bars (std across seeds)
-    dsain_std = np.array([0.032, 0.028, 0.021, 0.015, 0.012, 0.011])
-    fedavg_std = np.array([0.041, 0.035, 0.027, 0.019, 0.015, 0.013])
-
-    fig, ax = setup_figure(width=3.5, height=2.8)
-
-    # Plot with error bars
-    ax.errorbar(epsilons[:-1], dsain_acc[:-1], yerr=dsain_std[:-1],
-                label='DSAIN (ours)', marker='o', color=COLORS['dsain'],
-                linewidth=1.5, markersize=6, capsize=3)
-    ax.errorbar(epsilons[:-1], fedavg_acc[:-1], yerr=fedavg_std[:-1],
-                label='FedAvg + DP', marker='s', color=COLORS['fedavg'],
-                linewidth=1.5, markersize=6, capsize=3, linestyle='--')
-
-    # Add no-DP point
-    ax.scatter(20, dsain_acc[-1], marker='*', s=200, color=COLORS['dsain'],
-               edgecolors='black', linewidths=1, zorder=10, label='No DP')
-
-    ax.set_xlabel(r'Privacy Budget ($\epsilon$)')
-    ax.set_ylabel('Test Accuracy')
-    ax.set_xscale('log')
-    ax.set_xlim([0.4, 25])
-    ax.set_ylim([0.5, 0.95])
-    ax.grid(True, alpha=0.3, linestyle='--', linewidth=0.5)
-    ax.legend(loc='lower right', framealpha=0.9)
-
-    # Shade practical regime
-    ax.axvspan(2.0, 8.0, alpha=0.1, color='green', label='Practical regime')
-    ax.text(4, 0.52, 'Practical\nRegime', ha='center', fontsize=8, color='green', fontweight='bold')
-
-    plt.tight_layout()
-    plt.savefig(output_dir / 'figure6_privacy.pdf', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    print(f"[OK] Figure 6: {output_dir / 'figure6_privacy.pdf'}")
-
-
-def figure7_ablation_study(output_dir: Path):
-    """
-    Figure 7: Ablation study visualization
-    """
-    configs = ['Full\nDSAIN', 'No\nCompression', 'No\nByzFed', 'No\nDP',
-               'Compression\nOnly', 'ByzFed\nOnly', 'DP\nOnly', 'Vanilla\nFedAvg']
-
-    # Accuracy, Communication (GB), Time (hours) - synthetic data
-    accuracy = [0.905, 0.898, 0.852, 0.912, 0.889, 0.865, 0.891, 0.884]
-    communication = [1.06, 4.82, 1.06, 1.06, 1.06, 4.82, 4.82, 4.82]
-
-    fig, ax = setup_figure(width=7.16, height=2.8)
-
-    x = np.arange(len(configs))
-    width = 0.35
-
-    # Create bars
-    ax1 = ax
-    bars1 = ax1.bar(x - width/2, accuracy, width, label='Accuracy',
-                    color=COLORS['dsain'], alpha=0.7)
-
-    ax1.set_xlabel('Configuration')
-    ax1.set_ylabel('Test Accuracy', color=COLORS['dsain'])
-    ax1.set_xticks(x)
-    ax1.set_xticklabels(configs, fontsize=8)
-    ax1.set_ylim([0.80, 0.95])
-    ax1.tick_params(axis='y', labelcolor=COLORS['dsain'])
-    ax1.grid(True, axis='y', alpha=0.3, linestyle='--', linewidth=0.5)
-
-    # Second y-axis for communication
-    ax2 = ax1.twinx()
-    bars2 = ax2.bar(x + width/2, communication, width, label='Communication',
-                    color=COLORS['fedavg'], alpha=0.7)
-
-    ax2.set_ylabel('Communication (GB)', color=COLORS['fedavg'])
-    ax2.set_ylim([0, 6])
-    ax2.tick_params(axis='y', labelcolor=COLORS['fedavg'])
-
-    # Highlight full DSAIN
-    bars1[0].set_edgecolor('black')
-    bars1[0].set_linewidth(2)
-    bars2[0].set_edgecolor('black')
-    bars2[0].set_linewidth(2)
+    colors = ['#2ecc71', '#f39c12', '#e74c3c']
+    bars = ax.bar(byzantine_fracs, accuracies, width=6, color=colors,
+                  edgecolor='black', linewidth=1.5)
 
     # Add value labels
-    for i, (acc, comm) in enumerate(zip(accuracy, communication)):
-        if i == 0:  # Full DSAIN
-            ax1.text(i - width/2, acc + 0.005, f'{acc:.3f}',
-                    ha='center', fontsize=7, fontweight='bold')
-            ax2.text(i + width/2, comm + 0.15, f'{comm:.2f}',
-                    ha='center', fontsize=7, fontweight='bold')
+    for bar, acc in zip(bars, accuracies):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
+                f'{acc:.2f}%', ha='center', va='bottom', fontsize=12, fontweight='bold')
 
-    # Combined legend
-    lines1, labels1 = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper right', framealpha=0.9)
+    ax.set_xlabel('Byzantine Fraction (%)')
+    ax.set_ylabel('Test Accuracy (%)')
+    ax.set_title('DSAIN Byzantine Resilience: Dose-Response Analysis\n(Label-Flipping Attack, α=0.5, 500 rounds)')
+    ax.set_xticks(byzantine_fracs)
+    ax.set_xticklabels(['0%\n(E1: Clean)', '10%\n(E10)', '20%\n(E3)'])
+    ax.set_ylim([0, 90])
+    ax.axhline(y=e1['final_accuracy']*100, color='gray', linestyle='--', alpha=0.5)
 
-    plt.tight_layout()
-    plt.savefig(output_dir / 'figure7_ablation.pdf', dpi=300, bbox_inches='tight')
-    plt.close()
+    fig.savefig(os.path.join(FIGURES_DIR, 'byzantine_resilience.pdf'))
+    fig.savefig(os.path.join(FIGURES_DIR, 'byzantine_resilience.png'))
+    plt.close(fig)
+    print("  -> Saved byzantine_resilience.pdf/png")
+    return True
 
-    print(f"[OK] Figure 7: {output_dir / 'figure7_ablation.pdf'}")
+def plot_byzantine_comparison():
+    """Compare DSAIN vs FedAvg under Byzantine attack (E3 vs E4)."""
+    print("\n[3/6] Generating byzantine_comparison...")
 
+    e1 = load_experiment('E1')  # DSAIN clean
+    e2 = load_experiment('E2')  # FedAvg clean
+    e3 = load_experiment('E3')  # DSAIN 20% byz
+    e4 = load_experiment('E4')  # FedAvg 20% byz
 
-def figure8_deployment_convergence(output_dir: Path):
-    """
-    Figure 8: Deployment/simulation convergence
-    """
-    rounds = np.arange(0, 1001, 50)
+    if not all([e1, e2, e3, e4]):
+        print("  ERROR: Missing experiment data")
+        return False
 
-    # Convergence with Byzantine attack at round 500
-    dsain_clean = 27.3 + 10 * (1 - np.exp(-rounds / 300))  # BLEU score
-    dsain_attacked = dsain_clean.copy()
-    dsain_attacked[rounds >= 500] = 26.9 + 10 * (1 - np.exp(-(rounds[rounds >= 500] - 500) / 300))
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-    fedavg_clean = 26.1 + 12 * (1 - np.exp(-rounds / 350))
-    fedavg_attacked = fedavg_clean.copy()
-    fedavg_attacked[rounds >= 500] = 15.2 + 5 * (1 - np.exp(-(rounds[rounds >= 500] - 500) / 200))
+    x = np.arange(2)
+    width = 0.35
 
-    centralized = 28.4 * np.ones_like(rounds)
+    dsain_accs = [e1['final_accuracy']*100, e3['final_accuracy']*100]
+    fedavg_accs = [e2['final_accuracy']*100, e4['final_accuracy']*100]
 
-    fig, ax = setup_figure(width=3.5, height=2.8)
+    bars1 = ax.bar(x - width/2, dsain_accs, width, label='DSAIN',
+                   color='#3498db', edgecolor='black')
+    bars2 = ax.bar(x + width/2, fedavg_accs, width, label='FedAvg',
+                   color='#e74c3c', edgecolor='black')
 
-    # Plot convergence
-    ax.plot(rounds, dsain_clean, label='DSAIN (no attack)',
-            color=COLORS['dsain'], linewidth=1.5)
-    ax.plot(rounds, dsain_attacked, label='DSAIN (14% Byzantine)',
-            color=COLORS['dsain'], linewidth=1.5, linestyle='--')
+    # Add value labels
+    for bars in [bars1, bars2]:
+        for bar in bars:
+            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
+                    f'{bar.get_height():.2f}%', ha='center', va='bottom', fontsize=10)
 
-    ax.plot(rounds, fedavg_clean, label='FedAvg (no attack)',
-            color=COLORS['fedavg'], linewidth=1.5, alpha=0.7)
-    ax.plot(rounds, fedavg_attacked, label='FedAvg (14% Byzantine)',
-            color=COLORS['fedavg'], linewidth=1.5, linestyle='--', alpha=0.7)
+    ax.set_xlabel('Condition')
+    ax.set_ylabel('Test Accuracy (%)')
+    ax.set_title('Byzantine Attack Comparison: DSAIN vs FedAvg\n(20% Label-Flipping Attack, α=0.5, 500 rounds)')
+    ax.set_xticks(x)
+    ax.set_xticklabels(['Clean (0% Byzantine)', '20% Byzantine Attack'])
+    ax.legend(loc='upper right')
+    ax.set_ylim([0, 90])
+    ax.grid(True, axis='y', alpha=0.3)
 
-    ax.axhline(centralized[0], label='Centralized', color=COLORS['centralized'],
-               linewidth=1, linestyle=':')
+    fig.savefig(os.path.join(FIGURES_DIR, 'byzantine_comparison.pdf'))
+    fig.savefig(os.path.join(FIGURES_DIR, 'byzantine_comparison.png'))
+    plt.close(fig)
+    print("  -> Saved byzantine_comparison.pdf/png")
+    return True
 
-    # Mark attack start
-    ax.axvline(500, color='red', linewidth=1, linestyle=':', alpha=0.5)
-    ax.text(510, 16, 'Attack starts', fontsize=8, color='red', rotation=90, va='bottom')
+def plot_heterogeneity():
+    """Plot impact of heterogeneity (replaces scalability with actual data)."""
+    print("\n[4/6] Generating scalability (heterogeneity analysis)...")
 
-    ax.set_xlabel('Training Round')
-    ax.set_ylabel('BLEU Score (En→De)')
-    ax.set_xlim([0, 1000])
-    ax.set_ylim([15, 30])
-    ax.grid(True, alpha=0.3, linestyle='--', linewidth=0.5)
-    ax.legend(loc='lower right', fontsize=7, framealpha=0.9)
+    e1 = load_experiment('E1')  # DSAIN α=0.5
+    e2 = load_experiment('E2')  # FedAvg α=0.5
+    e5 = load_experiment('E5')  # DSAIN α=1.0
+    e6 = load_experiment('E6')  # FedAvg α=1.0
+    e7 = load_experiment('E7')  # DSAIN α=0.1
+    e8 = load_experiment('E8')  # FedAvg α=0.1
 
-    plt.tight_layout()
-    plt.savefig(output_dir / 'figure8_deployment.pdf', dpi=300, bbox_inches='tight')
-    plt.close()
+    if not all([e1, e2, e5, e6, e7, e8]):
+        print("  ERROR: Missing experiment data")
+        return False
 
-    print(f"[OK] Figure 8: {output_dir / 'figure8_deployment.pdf'}")
+    fig, ax = plt.subplots(figsize=(10, 6))
 
+    alphas = [0.1, 0.5, 1.0]
+    dsain_accs = [e7['final_accuracy']*100, e1['final_accuracy']*100, e5['final_accuracy']*100]
+    fedavg_accs = [e8['final_accuracy']*100, e2['final_accuracy']*100, e6['final_accuracy']*100]
+
+    ax.plot(alphas, dsain_accs, 'b-o', linewidth=2.5, markersize=12, label='DSAIN')
+    ax.plot(alphas, fedavg_accs, 'r-s', linewidth=2.5, markersize=12, label='FedAvg')
+
+    # Add value labels
+    for a, d, f in zip(alphas, dsain_accs, fedavg_accs):
+        ax.annotate(f'{d:.1f}%', (a, d), textcoords="offset points",
+                    xytext=(0, 12), ha='center', fontsize=11, fontweight='bold', color='blue')
+        ax.annotate(f'{f:.1f}%', (a, f), textcoords="offset points",
+                    xytext=(0, -18), ha='center', fontsize=11, fontweight='bold', color='red')
+
+    # Mark critical threshold
+    ax.axvline(x=0.5, color='orange', linestyle='--', alpha=0.7, linewidth=2,
+               label='Critical threshold (α=0.5)')
+    ax.axvspan(0, 0.5, alpha=0.1, color='red')
+
+    ax.set_xlabel('Dirichlet α (lower = more heterogeneous)')
+    ax.set_ylabel('Test Accuracy (%)')
+    ax.set_title('Impact of Data Heterogeneity on Federated Learning\n(CIFAR-10, ResNet18, 500 rounds)')
+    ax.legend(loc='lower right')
+    ax.set_xlim([0, 1.1])
+    ax.set_ylim([50, 90])
+    ax.set_xticks([0.1, 0.5, 1.0])
+    ax.grid(True, alpha=0.3)
+
+    fig.savefig(os.path.join(FIGURES_DIR, 'scalability.pdf'))
+    fig.savefig(os.path.join(FIGURES_DIR, 'scalability.png'))
+    plt.close(fig)
+    print("  -> Saved scalability.pdf/png (heterogeneity analysis)")
+    return True
+
+def plot_all_experiments_summary():
+    """Create summary bar chart of all 10 experiments."""
+    print("\n[5/6] Generating all experiments summary...")
+
+    experiments = []
+    for i in range(1, 11):
+        exp = load_experiment(f'E{i}')
+        if exp:
+            experiments.append((f"E{i}", exp['final_accuracy']*100, exp['config']['exp_name']))
+
+    if len(experiments) < 10:
+        print(f"  WARNING: Only found {len(experiments)}/10 experiments")
+        if len(experiments) == 0:
+            return False
+
+    fig, ax = plt.subplots(figsize=(14, 6))
+
+    names = [e[0] for e in experiments]
+    accs = [e[1] for e in experiments]
+    labels = [e[2] for e in experiments]
+
+    # Color by type
+    colors = []
+    for label in labels:
+        if 'byz' in label.lower():
+            colors.append('#e74c3c')  # Red for Byzantine
+        elif 'dp' in label.lower():
+            colors.append('#9b59b6')  # Purple for DP
+        elif 'FedAvg' in label:
+            colors.append('#f39c12')  # Orange for FedAvg
+        else:
+            colors.append('#3498db')  # Blue for DSAIN clean
+
+    bars = ax.bar(names, accs, color=colors, edgecolor='black', linewidth=1)
+
+    # Add value labels
+    for bar, acc in zip(bars, accs):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.8,
+                f'{acc:.1f}%', ha='center', va='bottom', fontsize=10, rotation=0)
+
+    ax.set_xlabel('Experiment ID')
+    ax.set_ylabel('Test Accuracy (%)')
+    ax.set_title('Complete Experimental Results: All 10 Experiments\n(CIFAR-10, ResNet18, 500 rounds, seed=42)')
+    ax.set_ylim([0, 95])
+    ax.axhline(y=10, color='gray', linestyle=':', alpha=0.5)
+
+    # Custom legend
+    from matplotlib.patches import Patch
+    legend_elements = [
+        Patch(facecolor='#3498db', edgecolor='black', label='DSAIN (clean)'),
+        Patch(facecolor='#f39c12', edgecolor='black', label='FedAvg'),
+        Patch(facecolor='#e74c3c', edgecolor='black', label='Byzantine attack'),
+        Patch(facecolor='#9b59b6', edgecolor='black', label='Differential privacy'),
+    ]
+    ax.legend(handles=legend_elements, loc='upper right')
+    ax.grid(True, axis='y', alpha=0.3)
+
+    fig.savefig(os.path.join(FIGURES_DIR, 'all_experiments_summary.pdf'))
+    fig.savefig(os.path.join(FIGURES_DIR, 'all_experiments_summary.png'))
+    plt.close(fig)
+    print("  -> Saved all_experiments_summary.pdf/png")
+    return True
+
+def plot_convergence_multi():
+    """Plot convergence curves for multiple experiments."""
+    print("\n[6/6] Generating multi-experiment convergence...")
+
+    e1 = load_experiment('E1')   # DSAIN α=0.5
+    e5 = load_experiment('E5')   # DSAIN α=1.0
+    e7 = load_experiment('E7')   # DSAIN α=0.1
+    e3 = load_experiment('E3')   # DSAIN byz 20%
+
+    if not all([e1, e5, e7, e3]):
+        print("  ERROR: Missing experiment data")
+        return False
+
+    fig, ax = plt.subplots(figsize=(12, 7))
+
+    # Plot each experiment
+    experiments = [
+        (e5, 'α=1.0 (mild)', '#2ecc71', '-'),
+        (e1, 'α=0.5 (moderate)', '#3498db', '-'),
+        (e7, 'α=0.1 (severe)', '#e74c3c', '-'),
+        (e3, 'α=0.5 + 20% Byz', '#9b59b6', '--'),
+    ]
+
+    for exp, label, color, style in experiments:
+        rounds = exp['history']['round']
+        accs = [a * 100 for a in exp['history']['accuracy']]
+        ax.plot(rounds, accs, color=color, linestyle=style, linewidth=2,
+                label=f"{label}: {exp['final_accuracy']*100:.2f}%")
+
+    ax.set_xlabel('Communication Round')
+    ax.set_ylabel('Test Accuracy (%)')
+    ax.set_title('DSAIN Convergence Under Different Conditions\n(CIFAR-10, ResNet18, 500 rounds)')
+    ax.legend(loc='lower right')
+    ax.set_xlim([0, 520])
+    ax.set_ylim([30, 85])
+    ax.grid(True, alpha=0.3)
+
+    fig.savefig(os.path.join(FIGURES_DIR, 'convergence_multi.pdf'))
+    fig.savefig(os.path.join(FIGURES_DIR, 'convergence_multi.png'))
+    plt.close(fig)
+    print("  -> Saved convergence_multi.pdf/png")
+    return True
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate publication-quality figures')
-    parser.add_argument('--results_dir', type=str, default='../results',
-                       help='Directory containing experimental results')
-    parser.add_argument('--output_dir', type=str, default='../latex/figures',
-                       help='Output directory for figures')
+    print("=" * 70)
+    print("GENERATING FIGURES FROM E1-E10 EXPERIMENTAL RESULTS")
+    print("=" * 70)
+    print(f"Results directory: {os.path.abspath(RESULTS_DIR)}")
+    print(f"Figures directory: {os.path.abspath(FIGURES_DIR)}")
 
-    args = parser.parse_args()
+    # Check results exist
+    if not os.path.exists(RESULTS_DIR):
+        print(f"\nERROR: Results directory not found: {RESULTS_DIR}")
+        sys.exit(1)
 
-    # Create output directory
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    print("="*70)
-    print("GENERATING PUBLICATION-QUALITY FIGURES FOR TMLR")
-    print("="*70)
-    print(f"Output directory: {output_dir.absolute()}")
-    print()
+    # Count available experiments
+    exp_count = sum(1 for f in os.listdir(RESULTS_DIR)
+                    if f.startswith('E') and f.endswith('.json'))
+    print(f"Found {exp_count} experiment files")
 
     # Generate all figures
-    print("Generating figures...")
-    print()
+    success = []
+    success.append(plot_convergence_curves())
+    success.append(plot_byzantine_resilience())
+    success.append(plot_byzantine_comparison())
+    success.append(plot_heterogeneity())
+    success.append(plot_all_experiments_summary())
+    success.append(plot_convergence_multi())
 
-    figure1_system_architecture(output_dir)
-    figure2_convergence_curves(output_dir)
-    figure3_byzantine_comparison(output_dir)
-    figure4_communication_accuracy_tradeoff(output_dir)
-    figure5_scalability(output_dir)
-    figure6_privacy_utility_frontier(output_dir)
-    figure7_ablation_study(output_dir)
-    figure8_deployment_convergence(output_dir)
+    print("\n" + "=" * 70)
+    print(f"FIGURE GENERATION COMPLETE: {sum(success)}/{len(success)} successful")
+    print("=" * 70)
+    print(f"\nFigures saved to: {os.path.abspath(FIGURES_DIR)}")
 
-    print()
-    print("="*70)
-    print("[SUCCESS] ALL 8 FIGURES GENERATED SUCCESSFULLY")
-    print("="*70)
-    print()
-    print("Figures saved to:", output_dir.absolute())
-    print()
-    print("Next steps:")
-    print("1. Review figures in:", output_dir)
-    print("2. Add \\includegraphics commands to main_tmlr.tex")
-    print("3. Compile LaTeX to verify figures display correctly")
-    print()
-
+    if all(success):
+        print("\nAll figures generated successfully!")
+        return 0
+    else:
+        print("\nSome figures failed to generate. Check errors above.")
+        return 1
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

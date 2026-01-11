@@ -1,0 +1,64 @@
+{
+  "config": {
+    "model_name": "resnet18",
+    "num_classes": 10,
+    "dataset": "cifar10",
+    "data_root": "./data",
+    "num_clients": 20,
+    "participation_rate": 0.25,
+    "num_rounds": 50,
+    "local_epochs": 5,
+    "batch_size": 32,
+    "learning_rate": 0.01,
+    "momentum": 0.9,
+    "weight_decay": 0.0001,
+    "heterogeneity_type": "dirichlet",
+    "dirichlet_alpha": 0.5,
+    "quantity_skew": "uniform",
+    "feature_skew": false,
+    "compression_ratio": 0.22,
+    "byzantine_frac": 0.2,
+    "dp_epsilon": Infinity,
+    "dp_delta": 1e-05,
+    "gradient_clip": 1.0,
+    "seed": 42,
+    "eval_every": 10,
+    "save_checkpoints": false,
+    "quick_test": false
+  },
+  "final_accuracy": 0.7904,
+  "final_loss": 0.9369011816382408,
+  "total_time_seconds": 2711.436893939972,
+  "total_time_hours": 0.7531769149833255,
+  "model_parameters": 11173962,
+  "history": {
+    "round": [
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "accuracy": [
+      0.65,
+      0.6573,
+      0.8035,
+      0.826,
+      0.7904
+    ],
+    "loss": [
+      1.5284937024116516,
+      1.6165342938899994,
+      0.7528258210420609,
+      0.7452654150128365,
+      0.9369011816382408
+    ],
+    "time": [
+      550.6515374183655,
+      1075.1727018356323,
+      1620.2958149909973,
+      2163.5420339107513,
+      2711.4364047050476
+    ]
+  }
+}
